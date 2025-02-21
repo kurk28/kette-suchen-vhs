@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    #main {
+      height: 100vh;
+      background-color: rgb(255, 255, 255);
+    }
+
+    #game {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-auto-rows: 200px;
+      column-gap: 20px;
+      row-gap: 20px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      flex-direction: column;
+
+      #input-chain {
+        width: 100ch;
+      }
+    }
+
+    .container {
+      margin-left: 125px;
+      margin-right: 125px;
+    }
+
+    .chain-preview {
+      display: flex;
+      justify-content: start;
+      flex-wrap: wrap;
+
+      .word-preview {
+        margin-right: 10px;
+      }
+    }
+
+    .word-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 20px;
+      text-align: center;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: rgb(251, 236, 249);
+    }
+  </style>
+  <title>Kette Suchen</title>
+</head>
+
+<body>
+  <main id="main">
+    <section class="container">
+      <h1>Kette Suchen</h1>
+      <section>
+        <label for="chain-length">Set chain length</label>
+        <input id="chain-length" type="number" min="2" max="100">
+        <button id="button-set-length">Set chain</button>
+      </section>
+      <section class="input-wrapper">
+        <label for="input-chain">Add chain text</label>
+        <input id="input-chain" type="text" maxlength="1000" placeholder="Suche nach einem Wort">
+        <button id="button-add">Add</button>
+      </section>
+      <section class="chain-preview"></section>
+      <button id="button-play">Let's play!</button>
+      <section id="game"></section>
+    </section>
+
+  </main>
+
+  <script>
+    var chainLength = 2;
+    var wordChains = new Map();
+    var inputChain = document.querySelector("#input-chain");
+    var chainPreview = document.querySelector(".chain-preview");
+    var buttonAdd = document.querySelector("#button-add");
+    var buttonPlay = document.querySelector("#button-play");
+    var game = document.querySelector('#game');
+    var buttonSetLength = document.querySelector("#button-set-length");
+    var inputChainLength = document.querySelector("#chain-length");
+
+    buttonSetLength.addEventListener("click", function (event) {
+      const newChainLength = parseInt(inputChainLength.value, 10);
+      if (newChainLength) {
+        chainLength = newChainLength;
+      }
+    });
+
+    buttonAdd.addEventListener("click", function (event) {
+      const input = inputChain.value;
+      if (inputChain.value) {
+        const words = inputChain.value.trim().split(" ");
+        if (words.length === chainLength) {
+          let hash = 0;
+          for (w of words) {
+            hash += w.trim().split("").reduce((acc, curr) => {
+              const code = curr.charCodeAt(0);
+              return acc + code;
+            }, 0);
+            if (!wordChains.has(hash)) {
+              wordChains.set(hash, w);
+              const span = document.createElement("span");
+              span.classList.add("word-preview");
+              const text = document.createTextNode(inputChain.value);
+              span.appendChild(text);
+              chainPreview.appendChild(span);
+              inputChain.value = "";
+            }
+          }
+        }
+      }
+    });
+
+    buttonPlay.addEventListener("click", function (event) {
+      const iterator = wordChains.values();
+      let value = iterator.next();
+      while (!value.done) {
+        let chain = value.value.split(" ");
+        for (let w of chain) {
+          const div = document.createElement("div");
+          div.classList.add("word-container");
+          div.innerText = w;
+          game.appendChild(div);
+        }
+
+        value = iterator.next();
+      }
+    })
+
+  </script>
+</body>
+
+</html>
