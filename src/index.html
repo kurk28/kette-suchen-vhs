@@ -78,6 +78,8 @@
   </main>
 
   <script>
+    var wordPositions;
+    var splitSymbol = " ";
     var chainLength = 2;
     var wordChains = new Map();
     var inputChain = document.querySelector("#input-chain");
@@ -88,6 +90,42 @@
     var buttonSetLength = document.querySelector("#button-set-length");
     var inputChainLength = document.querySelector("#chain-length");
 
+    function getWordPositions(cl, wc) {
+      const elementsCount = wc.size;
+      const iterator = wc.values();
+      const wordPositions = new Array(elementsCount * cl);
+      let chain = iterator.next();
+
+      for (let i = 0; i < elementsCount; i++) {
+        let words = chain.value.split(splitSymbol);
+        for (let j = 0; j < cl; j++) {
+          let position = Math.floor(Math.random() * elementsCount * cl);
+          if (wordPositions[position]) {
+            while (wordPositions[position] !== undefined) {
+              if (position >= wordPositions.length - 1) {
+                position = 0;
+                continue;
+              }
+              position += 1;
+            }
+            wordPositions[position] = words[j];
+          } else {
+            wordPositions[position] = words[j];
+          }
+        }
+        chain = iterator.next();
+      }
+      return wordPositions;
+    }
+
+    function createTales(wp) {
+      for (let w of wordPositions) {
+        const div = document.createElement("div");
+        div.classList.add("word-container");
+        div.innerText = w;
+        game.appendChild(div);
+      }
+    }
     buttonSetLength.addEventListener("click", function (event) {
       const newChainLength = parseInt(inputChainLength.value, 10);
       if (newChainLength) {
@@ -98,42 +136,31 @@
     buttonAdd.addEventListener("click", function (event) {
       const input = inputChain.value;
       if (inputChain.value) {
-        const words = inputChain.value.trim().split(" ");
+        const words = inputChain.value.trim().split(splitSymbol);
         if (words.length === chainLength) {
           let hash = 0;
           for (w of words) {
-            hash += w.trim().split("").reduce((acc, curr) => {
+            hash += w.split("").reduce((acc, curr) => {
               const code = curr.charCodeAt(0);
               return acc + code;
             }, 0);
-            if (!wordChains.has(hash)) {
-              wordChains.set(hash, w);
-              const span = document.createElement("span");
-              span.classList.add("word-preview");
-              const text = document.createTextNode(inputChain.value);
-              span.appendChild(text);
-              chainPreview.appendChild(span);
-              inputChain.value = "";
-            }
+          }
+          if (!wordChains.has(hash)) {
+            wordChains.set(hash, inputChain.value.trim());
+            const span = document.createElement("span");
+            span.classList.add("word-preview");
+            const text = document.createTextNode(inputChain.value);
+            span.appendChild(text);
+            chainPreview.appendChild(span);
+            inputChain.value = "";
           }
         }
       }
     });
 
     buttonPlay.addEventListener("click", function (event) {
-      const iterator = wordChains.values();
-      let value = iterator.next();
-      while (!value.done) {
-        let chain = value.value.split(" ");
-        for (let w of chain) {
-          const div = document.createElement("div");
-          div.classList.add("word-container");
-          div.innerText = w;
-          game.appendChild(div);
-        }
-
-        value = iterator.next();
-      }
+      wordPositions = getWordPositions(chainLength, wordChains);
+      createTales(wordPositions);
     })
 
   </script>
