@@ -51,6 +51,7 @@
       padding: 20px;
       border-radius: 5px;
       background-color: rgb(251, 236, 249);
+      cursor: pointer;
     }
   </style>
   <title>Kette Suchen</title>
@@ -82,6 +83,7 @@
     var splitSymbol = " ";
     var chainLength = 2;
     var wordChains = new Map();
+    var selectedWords = [];
     var inputChain = document.querySelector("#input-chain");
     var chainPreview = document.querySelector(".chain-preview");
     var buttonAdd = document.querySelector("#button-add");
@@ -118,13 +120,58 @@
       return wordPositions;
     }
 
-    function createTales(wp) {
-      for (let w of wordPositions) {
+    function onTileClick(w, tid, sw) {
+      if (sw.length === chainLength - 1) {
+        addWordForCalculation(w, tid, sw);
+        const hash = calculateWords(sw);
+        if (wordChains.has(hash)) {
+          for (let w of sw) {
+            const tile = document.querySelector(`[tile-id="${w.tileId}"]`);
+            tile.remove();
+          }
+          wordChains.delete(hash);
+          sw.length = 0;
+        } else {
+          sw.length = 0;
+        }
+      } else {
+        addWordForCalculation(w, tid, sw);
+      }
+    }
+
+    function createTiles(wp) {
+      for (let i = 0; i < wordPositions.length; i++) {
         const div = document.createElement("div");
         div.classList.add("word-container");
-        div.innerText = w;
+        div.setAttribute("tile-id", i);
+        div.innerText = wordPositions[i];
+
+        div.addEventListener("click", function () {
+          const word = this.innerText;
+          const tileId = this.getAttribute("tile-id");
+          onTileClick(word, tileId, selectedWords);
+        });
         game.appendChild(div);
       }
+    }
+
+    function addWordForCalculation(w, tid, sw) {
+      const wordData = {
+        word: w,
+        tileId: tid
+      };
+      sw.push(wordData);
+    }
+
+    function calculateWords(sw) {
+      let hash = 0;
+      for (w of sw) {
+        hash += w.word.split("").reduce((acc, curr) => {
+          const code = curr.charCodeAt(0);
+          return acc + code;
+        }, 0);
+      }
+      return hash;
     }
 
     function addChain() {
@@ -165,7 +212,7 @@
 
     buttonPlay.addEventListener("click", function (event) {
       wordPositions = getWordPositions(chainLength, wordChains);
-      createTales(wordPositions);
+      createTiles(wordPositions);
     });
 
     inputChain.addEventListener("keydown", function (event) {
