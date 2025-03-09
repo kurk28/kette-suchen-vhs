@@ -123,8 +123,10 @@
     }
 
     function onTileClick(w, tid, sw) {
-      openTile(tid);
-      addWordForCalculation(w, tid, sw);
+      if (sw.length !== chainLength) {
+        openTile(tid);
+        addWordForCalculation(w, tid, sw);
+      }
       if (sw.length === chainLength) {
         const hash = calculateWords(sw);
         if (wordChains.has(hash)) {
