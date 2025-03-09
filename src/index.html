@@ -82,13 +82,15 @@
     var wordPositions;
     var splitSymbol = " ";
     var chainLength = 2;
+    var closeTileDelay = 2000;
     var wordChains = new Map();
+    var indexToWord = new Map();
     var selectedWords = [];
     var inputChain = document.querySelector("#input-chain");
     var chainPreview = document.querySelector(".chain-preview");
     var buttonAdd = document.querySelector("#button-add");
     var buttonPlay = document.querySelector("#button-play");
-    var game = document.querySelector('#game');
+    var game = document.querySelector("#game");
     var buttonSetLength = document.querySelector("#button-set-length");
     var inputChainLength = document.querySelector("#chain-length");
 
@@ -121,8 +123,9 @@
     }
 
     function onTileClick(w, tid, sw) {
-      if (sw.length === chainLength - 1) {
-        addWordForCalculation(w, tid, sw);
+      openTile(tid);
+      addWordForCalculation(w, tid, sw);
+      if (sw.length === chainLength) {
         const hash = calculateWords(sw);
         if (wordChains.has(hash)) {
           for (let w of sw) {
@@ -132,23 +135,23 @@
           wordChains.delete(hash);
           sw.length = 0;
         } else {
-          sw.length = 0;
+          setTimeout(() => closeTile(sw), closeTileDelay);
         }
-      } else {
-        addWordForCalculation(w, tid, sw);
       }
     }
 
     function createTiles(wp) {
       for (let i = 0; i < wordPositions.length; i++) {
         const div = document.createElement("div");
+        const tileId = i + 1;
+        indexToWord.set(String(tileId), wp[i]);
         div.classList.add("word-container");
-        div.setAttribute("tile-id", i);
-        div.innerText = wordPositions[i];
+        div.setAttribute("tile-id", tileId);
+        div.innerText = tileId;
 
         div.addEventListener("click", function () {
-          const word = this.innerText;
           const tileId = this.getAttribute("tile-id");
+          const word = indexToWord.get(tileId);
           onTileClick(word, tileId, selectedWords);
         });
         game.appendChild(div);
@@ -172,6 +175,20 @@
         }, 0);
       }
       return hash;
+    }
+
+    function openTile(tid) {
+      const word = indexToWord.get(tid);
+      const tile = document.querySelector(`[tile-id="${tid}"]`);
+      tile.innerHTML = word;
+    }
+
+    function closeTile(sw) {
+      sw.forEach(wd => {
+        const tile = document.querySelector(`[tile-id="${wd.tileId}"]`);
+        tile.innerHTML = wd.tileId;
+      });
+      sw.length = 0;
     }
 
     function addChain() {
@@ -213,6 +230,7 @@
     buttonPlay.addEventListener("click", function (event) {
       wordPositions = getWordPositions(chainLength, wordChains);
       createTiles(wordPositions);
+      chainPreview.innerHTML = "";
     });
 
     inputChain.addEventListener("keydown", function (event) {
