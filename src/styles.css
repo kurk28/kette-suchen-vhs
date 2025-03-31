@@ -96,10 +96,17 @@ body {
 }
 
 .chain-preview-wrapper {
-  display: flex;
   justify-content: start;
   flex-wrap: wrap;
   margin-bottom: var(--margin-m);
+}
+
+.chain-preview-wrapper--visible {
+  display: flex;
+}
+
+.chain-preview-wrapper--hidden {
+  display: none;
 }
 
 .word-preview {
@@ -128,6 +135,7 @@ body {
 
 .word-container:hover {
   transform: scale(1.1);
+  box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
 .word-container--opened {
@@ -156,9 +164,8 @@ body {
   }
 }
 
-#set-chain-length-button {
+#set-length-button {
   flex: 6;
-  height: 100%;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
   border: none;
@@ -169,17 +176,17 @@ body {
   cursor: pointer;
 }
 
-#set-chain-length-button:hover,
-#set-chain-length-button:focus {
+#set-length-button:hover,
+#set-length-button:focus {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-#set-chain-length-button:disabled {
+#set-length-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
 
-#add-button {
+#add-chain-button {
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
   border-radius: var(--border-radius-s);
@@ -190,21 +197,22 @@ body {
   cursor: pointer;
 }
 
-#add-button:hover {
+#add-chain-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-#add-button:disabled {
+#add-chain-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
 
-.play-wrapper {
+.play-reset-wrapper {
   display: flex;
+  gap: var(--margin-s);
 }
 
 #play-button {
-  width: 100%;
+  flex: 1;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
   border-radius: var(--border-radius-s);
@@ -213,6 +221,27 @@ body {
   font-weight: var(--font-weight-bold);
   cursor: pointer;
   font-size: var(--font-size-l);
+}
+
+#reset-button {
+  flex: 1;
+  background-color: var(--dark-red);
+  padding: var(--padding-xs) var(--padding-s);
+  border-radius: var(--border-radius-s);
+  border: none;
+  color: var(--white-color);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  font-size: var(--font-size-l);
+}
+
+#reset-button:hover {
+  box-shadow: 0 0 5px var(--dark-red-deep);
+}
+
+#reset-button:disabled {
+  background-color: var(--warm-gray);
+  cursor: not-allowed;
 }
 
 #play-button:hover {
@@ -257,7 +286,7 @@ body {
 .chain-length-container {
   min-height: 50px;
   display: flex;
-  gap: 20px;
+  gap: var(--margin-m);
   justify-content: center;
   align-items: stretch;
 }
