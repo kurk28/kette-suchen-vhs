@@ -1,4 +1,6 @@
 :root {
+  --max-word-container-height: 0px;
+  --max-word-container-width: 200px;
   --white-color: #fff;
   --soft-cream: #fff5e1; /* Alternative Light Background */
   --warm-gray: #8c8377; /* Neutral Gray for Balance */
@@ -67,11 +69,18 @@ body {
 
 #game {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-auto-rows: 200px;
-  column-gap: 20px;
-  row-gap: 20px;
+  grid-auto-flow: row dense;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(var(--max-word-container-width), 1fr)
+  );
+  column-gap: var(--margin-s);
+  row-gap: var(--margin-s);
   margin-top: var(--margin-m);
+}
+
+.game--hidden {
+  content-visibility: hidden;
 }
 
 .chain-input-wrapper {
@@ -103,6 +112,7 @@ body {
 
 .chain-preview-wrapper--visible {
   display: flex;
+  row-gap: var(--margin-m);
 }
 
 .chain-preview-wrapper--hidden {
@@ -126,11 +136,16 @@ body {
   text-align: center;
   padding: var(--padding-s);
   border-radius: var(--border-radius-s);
-  background-color: var(--dark-red);
   color: var(--white-color);
   cursor: pointer;
   transition: transform 0.6s;
-  font-size: var(--font-size-l);
+  word-break: break-all;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+.word-container--not-chained {
+  background-color: var(--dark-red);
 }
 
 .word-container:hover {
@@ -138,15 +153,19 @@ body {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-.word-container--opened {
-  animation: open-word-container 0.6s;
+.rotate-word-container {
+  animation: rotate-word-container 0.5s ease-in-out;
 }
 
-.word-container--closed {
+/* .word-container--closed {
   animation: close-word-container 0.6s;
+} */
+
+.word-container--chained {
+  background-color: var(--muted-gold);
 }
 
-@keyframes open-word-container {
+@keyframes rotate-word-container {
   from {
     transform: rotateY(0deg);
   }
@@ -155,14 +174,14 @@ body {
   }
 }
 
-@keyframes close-word-container {
+/* @keyframes close-word-container {
   from {
     transform: rotateY(0deg);
   }
   to {
     transform: rotateY(-180deg);
   }
-}
+} */
 
 #set-length-button {
   flex: 6;
