@@ -94,7 +94,7 @@
       return false;
     }
 
-    function onTileClick({
+    async function onTileClick({
       tile,
       wordChains,
       selectedWords,
@@ -105,13 +105,13 @@
       const word = indexToWord.get(tileId);
       if (shouldSkipTileClick(tile, selectedWords, word)) return;
       if (selectedWords.length !== chainLength && selectedWords.length < chainLength) {
-        openTile(tile, word);
+        await openTile(tile, word);
         addWordForCalculation(word, tileId, selectedWords);
       } else {
-        closeTiles(selectedWords);
+        await closeTiles(selectedWords);
         selectedWords.length = 0;
         addWordForCalculation(word, tileId, selectedWords);
-        openTile(tile, word);
+        await openTile(tile, word);
       }
 
       if (selectedWords.length === chainLength) {
@@ -181,31 +181,40 @@
     }
 
     function openTile(tile, word) {
-      tile.addEventListener("animationend", function afterAnimation(event) {
-        if (event.animationName === "rotate-word-container") {
-          this.classList.remove("rotate-word-container");
-          this.innerHTML = word;
-          this.removeEventListener("animationend", afterAnimation);
-        }
+      return new Promise((resolve) => {
+        tile.addEventListener("animationend", function (event) {
+          if (event.animationName === "rotate-word-container") {
+            this.classList.remove("rotate-word-container");
+            this.innerHTML = word;
+            resolve();
+          }
+        }, { once: true });
+        tile.classList.add("rotate-word-container");
+        tile.innerHTML = "";
       });
-      tile.classList.add("rotate-word-container");
-      tile.innerHTML = "";
+
     }
 
     function closeTiles(sw) {
-      sw.forEach(wd => {
-        const tileId = wd.tileId;
-        const tile = document.querySelector(`[tile-id="${tileId}"]`);
-        tile.addEventListener("animationend", function afterAnimation(event) {
-          if (event.animationName === "rotate-word-container") {
-            this.classList.remove("rotate-word-container");
-            this.innerHTML = tileId;
-            this.removeEventListener("animationend", afterAnimation);
-          }
+      const promises = sw.map(wd => {
+        return new Promise((resolve) => {
+          sw.forEach(wd => {
+            const tileId = wd.tileId;
+            const tile = document.querySelector(`[tile-id="${tileId}"]`);
+            tile.addEventListener("animationend", function (event) {
+              if (event.animationName === "rotate-word-container") {
+                this.classList.remove("rotate-word-container");
+                this.innerHTML = tileId;
+                resolve();
+              }
+            }, { once: true });
+            tile.classList.add("rotate-word-container");
+            tile.innerHTML = '';
+          });
+
         });
-        tile.classList.add("rotate-word-container");
-        tile.innerHTML = '';
       });
+      return Promise.all(promises);
     }
 
     function switchWordsPreviewVisibility(v = false) {
