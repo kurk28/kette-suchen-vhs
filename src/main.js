@@ -231,7 +231,7 @@ function resetGame() {
   chainPreview.replaceChildren();
   setLengthButton.disabled = false;
   addChainButton.disabled = false;
-  playButton.disabled = false;
+  playButton.disabled = true;
 }
 
 function onPlayButtonClick({
@@ -269,6 +269,7 @@ chainLengthInput.addEventListener("keydown", function (event) {
 addChainButton.addEventListener("click", function (event) {
   const hash = addChain(chainInput.value, chainLength, wordChains);
   if (hash) {
+    if (playButton.disabled) playButton.disabled = false;
     const span = document.createElement("span");
     span.classList.add("word-preview");
     const text = document.createTextNode(chainInput.value);
@@ -294,6 +295,7 @@ chainInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !addChainButton.hasAttribute("disabled")) {
     const hash = addChain(this.value, chainLength, wordChains);
     if (hash) {
+      if (playButton.disabled) playButton.disabled = false;
       const span = document.createElement("span");
       span.classList.add("word-preview");
       const text = document.createTextNode(chainInput.value);
