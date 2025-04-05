@@ -1,4 +1,4 @@
-var wordPositions;
+var checkWordPosition = false;
 var splitSymbol = " ";
 var chainLength = 2;
 var closeTileDelay = 2000;
@@ -42,8 +42,7 @@ function getWordPositions(cl, wc) {
   return wordPositions;
 }
 
-function shouldSkipTileClick(tile, sw, word) {
-  if (tile.classList.contains("word-container--chained")) return true;
+function isWordSelected(tile, sw, word) {
   for (let i = 0; i < sw.length; i++) {
     if (sw[i].word === word) return true;
   }
@@ -59,7 +58,18 @@ async function onTileClick({
 }) {
   const tileId = tile.getAttribute("tile-id");
   const word = indexToWord.get(tileId);
-  if (shouldSkipTileClick(tile, selectedWords, word)) return;
+  // skip click if tile is already chained
+  if (tile.classList.contains("word-container--chained")) return;
+
+  const isWordSel = isWordSelected(tile, selectedWords, word);
+  // close word if user click on the filled chain
+  if (isWordSel && selectedWords.length === chainLength) {
+    await closeTiles(selectedWords);
+    selectedWords.length = 0;
+    return;
+  }
+  // open tile and add word for calculation
+  // or close already opened tiles before
   if (
     selectedWords.length !== chainLength &&
     selectedWords.length < chainLength
@@ -72,10 +82,10 @@ async function onTileClick({
     addWordForCalculation(word, tileId, selectedWords);
     await openTile(tile, word);
   }
-
+  // calculate chain
   if (selectedWords.length === chainLength) {
-    const hash = calculateWords(selectedWords);
-    if (wordChains.has(hash)) {
+    const isSelectedRight = checkSelectedWords(selectedWords, wordChains);
+    if (isSelectedRight) {
       for (let w of selectedWords) {
         const tile = document.querySelector(`[tile-id="${w.tileId}"]`);
         tile.classList.remove("word-container--not-chained");
@@ -138,6 +148,24 @@ function calculateWords(sw) {
     }, 0);
   }
   return hash;
+}
+
+function checkSelectedWords(sw, wc) {
+  const hash = calculateWords(sw);
+  const chain = wc.get(hash);
+  if (chain) {
+    const words = chain.split(splitSymbol);
+    for (let i = 0; i < words.length; i++) {
+      if (checkWordPosition && words[i] !== sw[i].word) {
+        return false;
+      } else if (!words.includes(sw[i].word)) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
 }
 
 function openTile(tile, word) {
