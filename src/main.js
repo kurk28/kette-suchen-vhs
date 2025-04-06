@@ -298,12 +298,31 @@ chainLengthInput.addEventListener("keydown", function (event) {
 addChainButton.addEventListener("click", function (event) {
   const hash = addChain(chainInput.value, chainLength, wordChains);
   if (hash) {
-    if (playButton.disabled) playButton.disabled = false;
+    // make possible to start a game
+    if (playButton.disabled) {
+      playButton.disabled = false;
+    }
+
+    const div = document.createElement("div");
     const span = document.createElement("span");
-    span.classList.add("word-preview");
     const text = document.createTextNode(chainInput.value);
+    const img = document.createElement("img");
+
+    div.classList.add("word-preview");
     span.appendChild(text);
-    chainPreview.appendChild(span);
+    // create image with SVG for deleting word chain
+    img.setAttribute("src", "./icons/close.svg");
+    img.classList.add("cross-icon");
+    img.setAttribute("alt", "Delete chain");
+    img.addEventListener("click", function (event) {
+      event.target.parentElement.remove();
+      if (chainPreview.children.length === 0) {
+        switchWordsPreviewVisibility(false);
+      }
+    });
+    div.appendChild(span);
+    div.appendChild(img);
+    chainPreview.appendChild(div);
     chainInput.value = "";
     switchWordsPreviewVisibility(true);
   }
@@ -324,12 +343,31 @@ chainInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !addChainButton.hasAttribute("disabled")) {
     const hash = addChain(this.value, chainLength, wordChains);
     if (hash) {
-      if (playButton.disabled) playButton.disabled = false;
+      // make possible to start a game
+      if (playButton.disabled) {
+        playButton.disabled = false;
+      }
+
+      const div = document.createElement("div");
       const span = document.createElement("span");
-      span.classList.add("word-preview");
       const text = document.createTextNode(chainInput.value);
+      const img = document.createElement("img");
+
+      div.classList.add("word-preview");
       span.appendChild(text);
-      chainPreview.appendChild(span);
+      // create image with SVG for deleting word chain
+      img.setAttribute("src", "./icons/close.svg");
+      img.classList.add("cross-icon");
+      img.setAttribute("alt", "Delete chain");
+      img.addEventListener("click", function (event) {
+        event.target.parentElement.remove();
+        if (chainPreview.children.length === 0) {
+          switchWordsPreviewVisibility(false);
+        }
+      });
+      div.appendChild(span);
+      div.appendChild(img);
+      chainPreview.appendChild(div);
       chainInput.value = "";
       switchWordsPreviewVisibility(true);
     }
