@@ -41,7 +41,7 @@ body {
   color: var(--black-color);
 }
 
-#main {
+.main {
   padding: 20px;
   height: 100%;
   background-color: var(--beige-color);
@@ -52,7 +52,7 @@ body {
   max-width: 1200px;
 }
 
-#header {
+.header {
   margin-bottom: var(--margin-s);
   font-size: var(--font-size-2xl);
 }
@@ -63,11 +63,11 @@ body {
   margin-bottom: var(--margin-m);
 }
 
-.section-chain-length {
+.chain-length-wrapper {
   margin-bottom: var(--margin-m);
 }
 
-#game {
+.game {
   display: grid;
   grid-auto-flow: row dense;
   grid-template-columns: repeat(
@@ -94,7 +94,7 @@ body {
   font-size: var(--font-size-l);
 }
 
-#chain-input {
+.chain-input {
   box-sizing: border-box;
   min-height: 50px;
   margin-bottom: var(--margin-s);
@@ -170,7 +170,7 @@ body {
   }
 }
 
-#set-length-button {
+.set-length-button {
   flex: 6;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
@@ -182,17 +182,68 @@ body {
   cursor: pointer;
 }
 
-#set-length-button:hover,
-#set-length-button:focus {
+.set-length-button:hover,
+.set-length-button:focus {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-#set-length-button:disabled {
+.set-length-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
 
-#add-chain-button {
+.set-order-important {
+  display: flex;
+  padding: 0;
+  gap: var(--margin-s);
+  border: none;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.set-word-order-button {
+  flex: 1;
+  background-color: var(--dark-red);
+  padding: var(--padding-xs) var(--padding-s);
+  border: none;
+  border-radius: var(--border-radius-s);
+  color: var(--white-color);
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.set-word-order-button[aria-checked="true"] {
+  box-shadow: 0 0 5px var(--dark-red-deep);
+  border: solid;
+  border-color: var(--rich-brown);
+}
+
+.labels-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--margin-s);
+}
+
+.word-order-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--margin-m);
+}
+
+.word-order-fieldset {
+  display: flex;
+  flex-direction: column;
+}
+
+.word-order-label {
+  display: block;
+  margin-bottom: var(--margin-s);
+  font-size: var(--font-size-l);
+}
+
+.add-chain-button {
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
   border-radius: var(--border-radius-s);
@@ -203,11 +254,11 @@ body {
   cursor: pointer;
 }
 
-#add-chain-button:hover {
+.add-chain-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-#add-chain-button:disabled {
+.add-chain-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
@@ -217,7 +268,7 @@ body {
   gap: var(--margin-s);
 }
 
-#play-button {
+.play-button {
   flex: 1;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
@@ -229,7 +280,7 @@ body {
   font-size: var(--font-size-l);
 }
 
-#reset-button {
+.reset-button {
   flex: 1;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
@@ -241,20 +292,20 @@ body {
   font-size: var(--font-size-l);
 }
 
-#reset-button:hover {
+.reset-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-#reset-button:disabled {
+.reset-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
 
-#play-button:hover {
+.play-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-#play-button:disabled {
+.play-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
@@ -265,7 +316,7 @@ body {
   font-size: var(--font-size-l);
 }
 
-#chain-length-input {
+.chain-length-input {
   height: 100%;
   box-sizing: border-box;
   flex: 1;
@@ -278,19 +329,18 @@ body {
   appearance: textfield;
 }
 
-#chain-length-input::-webkit-inner-spin-button,
-#chain-length-input::-webkit-outer-spin-button {
+.chain-length-input::-webkit-inner-spin-button,
+.chain-length-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-#chain-length-input:focus {
+.chain-length-input:focus {
   outline: none;
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-.chain-length-container {
-  min-height: 50px;
+.chain-length-input-wrapper {
   display: flex;
   gap: var(--margin-m);
   justify-content: center;

@@ -5,14 +5,15 @@ var closeTileDelay = 2000;
 var wordChains = new Map();
 var indexToWord = new Map();
 var selectedWords = [];
-var chainInput = document.querySelector("#chain-input");
+var chainInput = document.querySelector(".chain-input");
 var chainPreview = document.querySelector(".chain-preview-wrapper");
-var addChainButton = document.querySelector("#add-chain-button");
-var playButton = document.querySelector("#play-button");
-var resetButton = document.querySelector("#reset-button");
-var game = document.querySelector("#game");
-var setLengthButton = document.querySelector("#set-length-button");
-var chainLengthInput = document.querySelector("#chain-length-input");
+var addChainButton = document.querySelector(".add-chain-button");
+var playButton = document.querySelector(".play-button");
+var resetButton = document.querySelector(".reset-button");
+var game = document.querySelector(".game");
+var setLengthButton = document.querySelector(".set-length-button");
+var chainLengthInput = document.querySelector(".chain-length-input");
+var radioButtons = document.querySelectorAll(".set-word-order-button");
 
 function getWordPositions(cl, wc) {
   const elementsCount = wc.size;
@@ -338,4 +339,16 @@ chainInput.addEventListener("keydown", function (event) {
 resetButton.addEventListener("click", function (event) {
   resetGame();
   switchWordsPreviewVisibility(false);
+});
+
+radioButtons.forEach((button) => {
+  button.addEventListener("click", function (event) {
+    const selectedValue = event.target.value === "true";
+    if (selectedValue !== checkWordPosition) {
+      checkWordPosition = selectedValue;
+      for (let button of radioButtons) {
+        button.ariaChecked = button.ariaChecked === "false" ? true : false;
+      }
+    }
+  });
 });
