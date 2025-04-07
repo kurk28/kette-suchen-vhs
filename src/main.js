@@ -285,7 +285,37 @@ function onSetLengthButtonClick(target) {
   }
 }
 
-setLengthButton.addEventListener("click", function (event) {
+function createCloseIcon() {
+  const img = document.createElement("img");
+  img.setAttribute("src", "./icons/close.svg");
+  img.classList.add("cross-icon");
+  img.setAttribute("alt", "Delete chain");
+  img.addEventListener("click", function (event) {
+    event.target.parentElement.remove();
+    if (chainPreview.children.length === 0) {
+      switchWordsPreviewVisibility(false);
+    }
+  });
+  return img;
+}
+
+function createChainElement(c, cl, wc) {
+  const hash = addChain(c, cl, wc);
+  if (hash) {
+    const div = document.createElement("div");
+    const span = document.createElement("span");
+    const text = document.createTextNode(c);
+    const img = createCloseIcon();
+
+    div.classList.add("word-preview");
+    span.appendChild(text);
+    div.appendChild(span);
+    div.appendChild(img);
+    return div;
+  }
+}
+
+setLengthButton.addEventListener("click", function () {
   onSetLengthButtonClick(chainLengthInput);
 });
 
@@ -295,40 +325,24 @@ chainLengthInput.addEventListener("keydown", function (event) {
   }
 });
 
-addChainButton.addEventListener("click", function (event) {
-  const hash = addChain(chainInput.value, chainLength, wordChains);
-  if (hash) {
-    // make possible to start a game
+addChainButton.addEventListener("click", function () {
+  const chainElement = createChainElement(
+    chainInput.value,
+    chainLength,
+    wordChains
+  );
+  if (chainElement) {
     if (playButton.disabled) {
       playButton.disabled = false;
     }
 
-    const div = document.createElement("div");
-    const span = document.createElement("span");
-    const text = document.createTextNode(chainInput.value);
-    const img = document.createElement("img");
-
-    div.classList.add("word-preview");
-    span.appendChild(text);
-    // create image with SVG for deleting word chain
-    img.setAttribute("src", "./icons/close.svg");
-    img.classList.add("cross-icon");
-    img.setAttribute("alt", "Delete chain");
-    img.addEventListener("click", function (event) {
-      event.target.parentElement.remove();
-      if (chainPreview.children.length === 0) {
-        switchWordsPreviewVisibility(false);
-      }
-    });
-    div.appendChild(span);
-    div.appendChild(img);
-    chainPreview.appendChild(div);
+    chainPreview.appendChild(chainElement);
     chainInput.value = "";
     switchWordsPreviewVisibility(true);
   }
 });
 
-playButton.addEventListener("click", function (event) {
+playButton.addEventListener("click", function () {
   onPlayButtonClick({
     chainLength,
     wordChains,
@@ -341,41 +355,24 @@ playButton.addEventListener("click", function (event) {
 
 chainInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !addChainButton.hasAttribute("disabled")) {
-    const hash = addChain(this.value, chainLength, wordChains);
-    if (hash) {
-      // make possible to start a game
+    const chainElement = createChainElement(
+      this.value,
+      chainLength,
+      wordChains
+    );
+    if (chainElement) {
       if (playButton.disabled) {
         playButton.disabled = false;
       }
 
-      const div = document.createElement("div");
-      const span = document.createElement("span");
-      const text = document.createTextNode(chainInput.value);
-      const img = document.createElement("img");
-
-      div.classList.add("word-preview");
-      span.appendChild(text);
-      // create image with SVG for deleting word chain
-      img.setAttribute("src", "./icons/close.svg");
-      img.classList.add("cross-icon");
-      img.setAttribute("alt", "Delete chain");
-      img.addEventListener("click", function (event) {
-        event.target.parentElement.remove();
-        if (chainPreview.children.length === 0) {
-          switchWordsPreviewVisibility(false);
-          playButton.disabled = true;
-        }
-      });
-      div.appendChild(span);
-      div.appendChild(img);
-      chainPreview.appendChild(div);
-      chainInput.value = "";
+      chainPreview.appendChild(chainElement);
+      event.target.value = "";
       switchWordsPreviewVisibility(true);
     }
   }
 });
 
-resetButton.addEventListener("click", function (event) {
+resetButton.addEventListener("click", function () {
   resetGame();
   switchWordsPreviewVisibility(false);
 });
