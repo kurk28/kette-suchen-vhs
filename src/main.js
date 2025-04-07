@@ -278,20 +278,20 @@ function onPlayButtonClick({
   switchWordsPreviewVisibility(false);
 }
 
-function onSetLengthButtonClick(l) {
-  const newChainLength = parseInt(l, 10);
-  if (newChainLength) {
+function onSetLengthButtonClick(target) {
+  const newChainLength = parseInt(target.value, 10);
+  if (target.validity.valid) {
     chainLength = newChainLength;
   }
 }
 
 setLengthButton.addEventListener("click", function (event) {
-  onSetLengthButtonClick(chainLengthInput.value);
+  onSetLengthButtonClick(chainLengthInput);
 });
 
 chainLengthInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !setLengthButton.hasAttribute("disabled")) {
-    onSetLengthButtonClick(chainLengthInput.value);
+    onSetLengthButtonClick(event.target);
   }
 });
 
@@ -363,6 +363,7 @@ chainInput.addEventListener("keydown", function (event) {
         event.target.parentElement.remove();
         if (chainPreview.children.length === 0) {
           switchWordsPreviewVisibility(false);
+          playButton.disabled = true;
         }
       });
       div.appendChild(span);
