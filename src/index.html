@@ -24,7 +24,7 @@
           <label for="chain-length-input" class="chain-length-label">Set chain length</label>
           <div class="chain-length-input-wrapper">
             <input id="chain-length-input" type="number" min="2" max="99" value="2" class="chain-length-input ">
-            <button class="set-length-button">Set length</button>
+            <button class="set-length-button" type="button">Set length</button>
           </div>
         </section>
         <section class="word-order-wrapper">
@@ -32,22 +32,22 @@
           <div class="word-order-fieldset">
             <fieldset class="set-order-important" role="radiogroup" aria-labelledby="word-order-label">
               <button role="radio" name="checkWordPosition" aria-checked="true" class="set-word-order-button"
-                value="false">not
+                value="false" type="button">not
                 important</button>
               <button role="radio" name="checkWordPosition" aria-checked="false" class="set-word-order-button"
-                value="true">important</button>
+                value="true" type="button">important</button>
             </fieldset>
           </div>
         </section>
         <section class="chain-input-wrapper">
           <label for="chain-input" class="chain-input-label">Add chain text</label>
           <input id="chain-input" class="chain-input" type="text" maxlength="1000" placeholder="Suche nach einem Wort">
-          <button id="add-chain-button" class="add-chain-button">Add chain</button>
+          <button type="button" id="add-chain-button" class="add-chain-button">Add chain</button>
         </section>
         <section class="chain-preview-wrapper chain-preview-wrapper--hidden"></section>
         <section class="play-reset-wrapper">
-          <button id="reset-button" class="reset-button">Reset</button>
-          <button id="play-button" class="play-button" disabled>Let's play!</button>
+          <button type="button" id="reset-button" class="reset-button">Reset</button>
+          <button type="button" id="play-button" class="play-button" disabled>Let's play!</button>
         </section>
         <section class="game" class="game--hidden"></section>
     </section>

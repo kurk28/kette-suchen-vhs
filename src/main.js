@@ -360,7 +360,7 @@ chainInput.addEventListener("keydown", function (event) {
       }
 
       chainPreview.appendChild(chainElement);
-      chainInput.value = "";
+      event.target.value = "";
     }
   }
 });
