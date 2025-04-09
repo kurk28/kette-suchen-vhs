@@ -299,20 +299,17 @@ function createCloseIcon() {
   return img;
 }
 
-function createChainElement(c, cl, wc) {
-  const hash = addChain(c, cl, wc);
-  if (hash) {
-    const div = document.createElement("div");
-    const span = document.createElement("span");
-    const text = document.createTextNode(c);
-    const img = createCloseIcon();
+function createChainElement(c) {
+  const div = document.createElement("div");
+  const span = document.createElement("span");
+  const text = document.createTextNode(c);
+  const img = createCloseIcon();
 
-    div.classList.add("word-preview");
-    span.appendChild(text);
-    div.appendChild(span);
-    div.appendChild(img);
-    return div;
-  }
+  div.classList.add("word-preview");
+  span.appendChild(text);
+  div.appendChild(span);
+  div.appendChild(img);
+  return div;
 }
 
 setLengthButton.addEventListener("click", function () {
@@ -326,19 +323,16 @@ chainLengthInput.addEventListener("keydown", function (event) {
 });
 
 addChainButton.addEventListener("click", function () {
-  const chainElement = createChainElement(
-    chainInput.value,
-    chainLength,
-    wordChains
-  );
-  if (chainElement) {
+  const hash = addChain(chainInput.value, chainLength, wordChains);
+  if (hash) {
+    const chainElement = createChainElement(chainInput.value);
     if (playButton.disabled) {
       playButton.disabled = false;
+      switchWordsPreviewVisibility(true);
     }
 
     chainPreview.appendChild(chainElement);
     chainInput.value = "";
-    switchWordsPreviewVisibility(true);
   }
 });
 
@@ -355,19 +349,16 @@ playButton.addEventListener("click", function () {
 
 chainInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !addChainButton.hasAttribute("disabled")) {
-    const chainElement = createChainElement(
-      this.value,
-      chainLength,
-      wordChains
-    );
-    if (chainElement) {
+    const hash = addChain(event.target.value, chainLength, wordChains);
+    if (hash) {
+      const chainElement = createChainElement(event.target.value);
       if (playButton.disabled) {
         playButton.disabled = false;
+        switchWordsPreviewVisibility(true);
       }
 
       chainPreview.appendChild(chainElement);
-      event.target.value = "";
-      switchWordsPreviewVisibility(true);
+      chainInput.value = "";
     }
   }
 });
