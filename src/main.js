@@ -313,11 +313,13 @@ function createChainElement(c) {
 }
 
 setLengthButton.addEventListener("click", function () {
+  resetGame();
   onSetLengthButtonClick(chainLengthInput);
 });
 
 chainLengthInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !setLengthButton.hasAttribute("disabled")) {
+    resetGame();
     onSetLengthButtonClick(event.target);
   }
 });
