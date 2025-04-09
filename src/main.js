@@ -43,7 +43,7 @@ function getWordPositions(cl, wc) {
   return wordPositions;
 }
 
-function isWordSelected(tile, sw, word) {
+function isWordSelected(sw, word) {
   for (let i = 0; i < sw.length; i++) {
     if (sw[i].word === word) return true;
   }
@@ -62,7 +62,7 @@ async function onTileClick({
   // skip click if tile is already chained
   if (tile.classList.contains("word-container--chained")) return;
 
-  const isWordSel = isWordSelected(tile, selectedWords, word);
+  const isWordSel = isWordSelected(selectedWords, word);
   // close word if user click on the filled chain
   if (isWordSel && selectedWords.length === chainLength) {
     await closeTiles(selectedWords);
