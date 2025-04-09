@@ -1,4 +1,5 @@
 var checkWordPosition = false;
+var chainsSeparateSymbol = ",";
 var splitSymbol = " ";
 var chainLength = 2;
 var closeTileDelay = 2000;
@@ -226,7 +227,7 @@ function switchWordsPreviewVisibility(v = false) {
   }
 }
 
-function addChain(v, cl, wc) {
+function createChainHash(v, cl, wc) {
   if (v) {
     const words = v.trim().split(splitSymbol);
     if (words.length === cl) {
@@ -261,6 +262,7 @@ function resetGame() {
   setLengthButton.disabled = false;
   addChainButton.disabled = false;
   playButton.disabled = true;
+  radioButtons.forEach((button) => (button.disabled = false));
 }
 
 function onPlayButtonClick({
@@ -274,7 +276,12 @@ function onPlayButtonClick({
   wordPositions = getWordPositions(chainLength, wordChains);
   createTiles(wordPositions);
   chainPreview.innerHTML = "";
-  addDisabledAttr([playButton, addChainButton, setLengthButton]);
+  addDisabledAttr([
+    playButton,
+    addChainButton,
+    setLengthButton,
+    ...radioButtons,
+  ]);
   switchWordsPreviewVisibility(false);
 }
 
@@ -312,6 +319,41 @@ function createChainElement(c) {
   return div;
 }
 
+function addChain({ chain, chainLength, wordChains, chainPreview }) {
+  const hash = createChainHash(chain, chainLength, wordChains);
+  if (hash) {
+    const chainElement = createChainElement(chain);
+    chainPreview.appendChild(chainElement);
+    return true;
+  }
+  return false;
+}
+
+function addChainHandler({ chains, chainLength, wordChains, chainPreview }) {
+  for (let i = 0; i < chains.length; i++) {
+    isChainAdded = addChain({
+      chain: chains[i],
+      chainLength,
+      wordChains,
+      chainPreview,
+    });
+    if (isChainAdded) {
+      chains[i] = "";
+    }
+  }
+
+  const notAddedChains = [];
+  for (let i = 0; i < chains.length; i++) {
+    if (chains[i].length > 0) {
+      const trimmedChain = chains[i].trim();
+      if (trimmedChain.length > 0) {
+        notAddedChains.push(`${trimmedChain}${chainsSeparateSymbol}`);
+      }
+    }
+  }
+  return notAddedChains.join(" ");
+}
+
 setLengthButton.addEventListener("click", function () {
   resetGame();
   onSetLengthButtonClick(chainLengthInput);
@@ -325,16 +367,36 @@ chainLengthInput.addEventListener("keydown", function (event) {
 });
 
 addChainButton.addEventListener("click", function () {
-  const hash = addChain(chainInput.value, chainLength, wordChains);
-  if (hash) {
-    const chainElement = createChainElement(chainInput.value);
-    if (playButton.disabled) {
-      playButton.disabled = false;
-      switchWordsPreviewVisibility(true);
-    }
+  const chains = chainInput.value.split(chainsSeparateSymbol);
+  if (chains.length > 1) {
+    const notAddedChains = addChainHandler({
+      chains,
+      chainLength,
+      wordChains,
+      chainPreview,
+    });
+    chainInput.value = notAddedChains;
+  } else if (chains.length === 1) {
+    const notAddedChains = addChainHandler({
+      chains,
+      chainLength,
+      wordChains,
+      chainPreview,
+    });
+    chainInput.value = notAddedChains;
+  } else {
+    const notAddedChains = addChainHandler({
+      chains: [chainInput.value],
+      chainLength,
+      wordChains,
+      chainPreview,
+    });
+    chainInput.value = notAddedChains;
+  }
 
-    chainPreview.appendChild(chainElement);
-    chainInput.value = "";
+  if (playButton.disabled) {
+    playButton.disabled = false;
+    switchWordsPreviewVisibility(true);
   }
 });
 
@@ -351,16 +413,36 @@ playButton.addEventListener("click", function () {
 
 chainInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !addChainButton.hasAttribute("disabled")) {
-    const hash = addChain(event.target.value, chainLength, wordChains);
-    if (hash) {
-      const chainElement = createChainElement(event.target.value);
-      if (playButton.disabled) {
-        playButton.disabled = false;
-        switchWordsPreviewVisibility(true);
-      }
+    const chains = event.target.value.split(chainsSeparateSymbol);
+    if (chains.length > 1) {
+      const notAddedChains = addChainHandler({
+        chains,
+        chainLength,
+        wordChains,
+        chainPreview,
+      });
+      event.target.value = notAddedChains;
+    } else if (chains.length === 1) {
+      const notAddedChains = addChainHandler({
+        chains,
+        chainLength,
+        wordChains,
+        chainPreview,
+      });
+      event.target.value = notAddedChains;
+    } else {
+      const notAddedChains = addChainHandler({
+        chains: [event.target.value],
+        chainLength,
+        wordChains,
+        chainPreview,
+      });
+      event.target.value = notAddedChains;
+    }
 
-      chainPreview.appendChild(chainElement);
-      event.target.value = "";
+    if (playButton.disabled) {
+      playButton.disabled = false;
+      switchWordsPreviewVisibility(true);
     }
   }
 });
