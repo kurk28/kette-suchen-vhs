@@ -54,7 +54,7 @@ body {
 
 .header {
   margin-bottom: var(--margin-s);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-3xl);
 }
 
 .header-wrapper {
@@ -368,6 +368,25 @@ body {
 
 .cross-icon {
   cursor: pointer;
+}
+
+.game-score-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: var(--margin-m) 0;
+  gap: var(--margin-s);
+}
+
+.game-score-wrapper--hidden {
+  visibility: hidden;
+}
+
+.game-score {
+  font-size: var(--font-size-2xl);
+}
+
+.game-score-label {
+  font-size: var(--font-size-2xl);
 }
 
 @media (max-width: 375px) {

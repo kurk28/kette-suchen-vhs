@@ -2,6 +2,7 @@ var checkWordPosition = false;
 var chainsSeparateSymbol = ",";
 var splitSymbol = " ";
 var chainLength = 2;
+var gameScore = 0;
 var closeTileDelay = 2000;
 var wordChains = new Map();
 var indexToWord = new Map();
@@ -15,6 +16,8 @@ var game = document.querySelector(".game");
 var setLengthButton = document.querySelector(".set-length-button");
 var chainLengthInput = document.querySelector(".chain-length-input");
 var radioButtons = document.querySelectorAll(".set-word-order-button");
+var gameScoreWrapper = document.querySelector(".game-score-wrapper");
+var gameScoreElem = document.querySelector(".game-score");
 
 function getWordPositions(cl, wc) {
   const elementsCount = wc.size;
@@ -87,6 +90,7 @@ async function onTileClick({
   // calculate chain
   if (selectedWords.length === chainLength) {
     const isSelectedRight = checkSelectedWords(selectedWords, wordChains);
+    updateGameScore(gameScoreElem, gameScore + 1);
     if (isSelectedRight) {
       for (let w of selectedWords) {
         const tile = document.querySelector(`[tile-id="${w.tileId}"]`);
@@ -95,6 +99,13 @@ async function onTileClick({
       }
       selectedWords.length = 0;
     }
+  }
+}
+
+function updateGameScore(gse, gs = 0) {
+  if (gse) {
+    gameScore = gs;
+    gse.textContent = gs;
   }
 }
 
@@ -227,6 +238,16 @@ function switchWordsPreviewVisibility(v = false) {
   }
 }
 
+function switchGameScoreWrapperVisibility(el, v = false) {
+  if (el) {
+    if (v) {
+      el.classList.remove("game-score-wrapper--hidden");
+    } else {
+      el.classList.add("game-score-wrapper--hidden");
+    }
+  }
+}
+
 function createChainHash(v, cl, wc) {
   if (v) {
     const words = v.trim().split(splitSymbol);
@@ -263,6 +284,8 @@ function resetGame() {
   addChainButton.disabled = false;
   playButton.disabled = true;
   radioButtons.forEach((button) => (button.disabled = false));
+  updateGameScore(gameScoreElem);
+  switchGameScoreWrapperVisibility(gameScoreWrapper, false);
 }
 
 function onPlayButtonClick({
@@ -283,6 +306,7 @@ function onPlayButtonClick({
     ...radioButtons,
   ]);
   switchWordsPreviewVisibility(false);
+  switchGameScoreWrapperVisibility(gameScoreWrapper, true);
 }
 
 function onSetLengthButtonClick(target) {
@@ -408,6 +432,8 @@ playButton.addEventListener("click", function () {
     playButton: this,
     addChainButton,
     setLengthButton,
+    gameScoreElem,
+    gameScore,
   });
 });
 
