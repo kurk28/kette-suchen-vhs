@@ -357,28 +357,29 @@ function addChain({ chain, chainLength, wordChains, chainPreview }) {
 }
 
 function addChainHandler({ chains, chainLength, wordChains, chainPreview }) {
-  for (let i = 0; i < chains.length; i++) {
+  const chainsCopy = [...chains];
+  for (let i = 0; i < chainsCopy.length; i++) {
     isChainAdded = addChain({
-      chain: chains[i],
+      chain: chainsCopy[i],
       chainLength,
       wordChains,
       chainPreview,
     });
     if (isChainAdded) {
-      chains[i] = "";
+      chainsCopy[i] = "";
     }
   }
 
   const notAddedChains = [];
-  for (let i = 0; i < chains.length; i++) {
-    if (chains[i].length > 0) {
-      const trimmedChain = chains[i].trim();
+  for (let i = 0; i < chainsCopy.length; i++) {
+    if (chainsCopy[i].length > 0) {
+      const trimmedChain = chainsCopy[i].trim();
       if (trimmedChain.length > 0) {
         notAddedChains.push(`${trimmedChain}${chainsSeparateSymbol}`);
       }
     }
   }
-  return notAddedChains.join(" ");
+  return notAddedChains.join(" ").slice(0, -1);
 }
 
 setLengthButton.addEventListener("click", function () {
