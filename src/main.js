@@ -72,32 +72,33 @@ async function onTileClick({
     await closeTiles(selectedWords);
     selectedWords.length = 0;
     return;
-  }
-  // open tile and add word for calculation
-  // or close already opened tiles before
-  if (
-    selectedWords.length !== chainLength &&
-    selectedWords.length < chainLength
-  ) {
-    await openTile(tile, word);
-    addWordForCalculation(word, tileId, selectedWords);
-  } else {
-    await closeTiles(selectedWords);
-    selectedWords.length = 0;
-    addWordForCalculation(word, tileId, selectedWords);
-    await openTile(tile, word);
-  }
-  // calculate chain
-  if (selectedWords.length === chainLength) {
-    const isSelectedRight = checkSelectedWords(selectedWords, wordChains);
-    updateGameScore(gameScoreElem, gameScore + 1);
-    if (isSelectedRight) {
-      for (let w of selectedWords) {
-        const tile = document.querySelector(`[tile-id="${w.tileId}"]`);
-        tile.classList.remove("word-container--not-chained");
-        tile.classList.add("word-container--chained");
-      }
+  } else if (!isWordSel) {
+    // open tile and add word for calculation
+    // or close already opened tiles before
+    if (
+      selectedWords.length !== chainLength &&
+      selectedWords.length < chainLength
+    ) {
+      await openTile(tile, word);
+      addWordForCalculation(word, tileId, selectedWords);
+    } else {
+      await closeTiles(selectedWords);
       selectedWords.length = 0;
+      addWordForCalculation(word, tileId, selectedWords);
+      await openTile(tile, word);
+    }
+    // calculate chain
+    if (selectedWords.length === chainLength) {
+      const isSelectedRight = checkSelectedWords(selectedWords, wordChains);
+      updateGameScore(gameScoreElem, gameScore + 1);
+      if (isSelectedRight) {
+        for (let w of selectedWords) {
+          const tile = document.querySelector(`[tile-id="${w.tileId}"]`);
+          tile.classList.remove("word-container--not-chained");
+          tile.classList.add("word-container--chained");
+        }
+        selectedWords.length = 0;
+      }
     }
   }
 }
