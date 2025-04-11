@@ -227,7 +227,7 @@ function closeTiles(sw) {
   return Promise.all(promises);
 }
 
-function switchWordsPreviewVisibility(v = false) {
+function switchChainPreviewVisibility(v = false) {
   if (v) {
     if (chainPreview.classList.contains("chain-preview-wrapper--hidden")) {
       chainPreview.classList.remove("chain-preview-wrapper--hidden");
@@ -308,7 +308,7 @@ function onPlayButtonClick({
     setLengthButton,
     ...radioButtons,
   ]);
-  switchWordsPreviewVisibility(false);
+  switchChainPreviewVisibility(false);
   switchGameScoreWrapperVisibility(gameScoreWrapper, true);
 }
 
@@ -327,7 +327,7 @@ function createCloseIcon() {
   img.addEventListener("click", function (event) {
     event.target.parentElement.remove();
     if (chainPreview.children.length === 0) {
-      switchWordsPreviewVisibility(false);
+      switchChainPreviewVisibility(false);
     }
   });
   return img;
@@ -421,9 +421,9 @@ addChainButton.addEventListener("click", function () {
     chainInput.value = notAddedChains;
   }
 
-  if (playButton.disabled) {
+  if (playButton.disabled && chainPreview.children.length > 0) {
     playButton.disabled = false;
-    switchWordsPreviewVisibility(true);
+    switchChainPreviewVisibility(true);
   }
 });
 
@@ -469,16 +469,16 @@ chainInput.addEventListener("keydown", function (event) {
       event.target.value = notAddedChains;
     }
 
-    if (playButton.disabled) {
+    if (playButton.disabled && chainPreview.children.length > 0) {
       playButton.disabled = false;
-      switchWordsPreviewVisibility(true);
+      switchChainPreviewVisibility(true);
     }
   }
 });
 
 resetButton.addEventListener("click", function () {
   resetGame();
-  switchWordsPreviewVisibility(false);
+  switchChainPreviewVisibility(false);
 });
 
 radioButtons.forEach((button) => {
