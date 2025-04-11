@@ -47,9 +47,9 @@ function getWordPositions(cl, wc) {
   return wordPositions;
 }
 
-function isWordSelected(sw, word) {
+function isWordSelected(sw, word, tileId) {
   for (let i = 0; i < sw.length; i++) {
-    if (sw[i].word === word) return true;
+    if (sw[i].word === word && sw[i].tileId == tileId) return true;
   }
   return false;
 }
@@ -66,7 +66,7 @@ async function onTileClick({
   // skip click if tile is already chained
   if (tile.classList.contains("word-container--chained")) return;
 
-  const isWordSel = isWordSelected(selectedWords, word);
+  const isWordSel = isWordSelected(selectedWords, word, tileId);
   // close word if user click on the filled chain
   if (isWordSel && selectedWords.length === chainLength) {
     await closeTiles(selectedWords);
@@ -112,16 +112,18 @@ function updateGameScore(gse, gs = 0) {
 
 function createTiles(wp) {
   let maxHeight = 0;
-  for (let i = 0; i < wordPositions.length; i++) {
-    const div = document.createElement("div");
+  for (let i = 0; i < wp.length; i++) {
+    const wordContainerElem = document.createElement("div");
+    const wordElem = document.createElement("div");
     const tileId = i + 1;
     indexToWord.set(String(tileId), wp[i]);
-    div.classList.add("word-container");
-    div.classList.add("word-container--not-chained");
-    div.setAttribute("tile-id", tileId);
-    div.innerText = wordPositions[i];
+    wordContainerElem.classList.add("word-container");
+    wordContainerElem.classList.add("word-container--not-chained");
+    wordContainerElem.setAttribute("tile-id", tileId);
+    wordElem.innerText = wp[i];
+    wordContainerElem.appendChild(wordElem);
 
-    div.addEventListener("click", function () {
+    wordContainerElem.addEventListener("click", function () {
       onTileClick({
         tile: this,
         wordChains,
@@ -130,10 +132,10 @@ function createTiles(wp) {
         indexToWord,
       });
     });
-    game.appendChild(div);
-    const height = div.offsetHeight;
+    game.appendChild(wordContainerElem);
+    const height = wordContainerElem.offsetHeight;
     maxHeight = Math.max(maxHeight, height);
-    div.innerText = tileId;
+    wordElem.innerText = tileId;
   }
 
   const root = document.querySelector(":root");
@@ -189,14 +191,14 @@ function openTile(tile, word) {
       function (event) {
         if (event.animationName === "rotate-word-container") {
           this.classList.remove("rotate-word-container");
-          this.innerHTML = word;
+          this.firstChild.innerHTML = word;
           resolve();
         }
       },
       { once: true }
     );
     tile.classList.add("rotate-word-container");
-    tile.innerHTML = "";
+    tile.firstChild.innerHTML = "";
   });
 }
 
@@ -211,14 +213,14 @@ function closeTiles(sw) {
           function (event) {
             if (event.animationName === "rotate-word-container") {
               this.classList.remove("rotate-word-container");
-              this.innerHTML = tileId;
+              this.firstChild.innerHTML = tileId;
               resolve();
             }
           },
           { once: true }
         );
         tile.classList.add("rotate-word-container");
-        tile.innerHTML = "";
+        tile.firstChild.innerHTML = "";
       });
     });
   });

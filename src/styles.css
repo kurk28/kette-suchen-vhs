@@ -1,5 +1,5 @@
 :root {
-  --max-word-container-height: 0px;
+  /* --max-word-container-height property will be set dynamically with JS */
   --max-word-container-width: 200px;
   --white-color: #fff;
   --soft-cream: #fff5e1; /* Alternative Light Background */
@@ -129,6 +129,7 @@ body {
   border: solid;
   border-color: var(--dark-red);
   font-size: var(--font-size-l);
+  word-break: break-all;
 }
 
 .word-container {
@@ -390,4 +391,7 @@ body {
 }
 
 @media (max-width: 375px) {
+  :root {
+    --max-word-container-width: 100px;
+  }
 }
