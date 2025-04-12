@@ -227,7 +227,7 @@ function closeTiles(sw) {
   return Promise.all(promises);
 }
 
-function switchChainPreviewVisibility(v = false) {
+function switchChainPreviewVisibility(chainPreview, v = false) {
   if (v) {
     if (chainPreview.classList.contains("chain-preview-wrapper--hidden")) {
       chainPreview.classList.remove("chain-preview-wrapper--hidden");
@@ -289,6 +289,7 @@ function resetGame() {
   radioButtons.forEach((button) => (button.disabled = false));
   updateGameScore(gameScoreElem);
   switchGameScoreWrapperVisibility(gameScoreWrapper, false);
+  switchChainPreviewVisibility(chainPreview, false);
 }
 
 function onPlayButtonClick({
@@ -308,18 +309,11 @@ function onPlayButtonClick({
     setLengthButton,
     ...radioButtons,
   ]);
-  switchChainPreviewVisibility(false);
+  switchChainPreviewVisibility(chainPreview, false);
   switchGameScoreWrapperVisibility(gameScoreWrapper, true);
 }
 
-function onSetLengthButtonClick(target) {
-  const newChainLength = parseInt(target.value, 10);
-  if (target.validity.valid) {
-    chainLength = newChainLength;
-  }
-}
-
-function createCloseIcon() {
+function createCloseIcon(cp) {
   const img = document.createElement("img");
   img.setAttribute("src", "./icons/close.svg");
   img.classList.add("cross-icon");
@@ -327,17 +321,17 @@ function createCloseIcon() {
   img.addEventListener("click", function (event) {
     event.target.parentElement.remove();
     if (chainPreview.children.length === 0) {
-      switchChainPreviewVisibility(false);
+      switchChainPreviewVisibility(chainPreview, false);
     }
   });
   return img;
 }
 
-function createChainElement(c) {
+function createChainElement(c, cp) {
   const div = document.createElement("div");
   const span = document.createElement("span");
   const text = document.createTextNode(c);
-  const img = createCloseIcon();
+  const img = createCloseIcon(cp);
 
   div.classList.add("word-preview");
   span.appendChild(text);
@@ -349,7 +343,7 @@ function createChainElement(c) {
 function addChain({ chain, chainLength, wordChains, chainPreview }) {
   const hash = createChainHash(chain, chainLength, wordChains);
   if (hash) {
-    const chainElement = createChainElement(chain);
+    const chainElement = createChainElement(chain, chainPreview);
     chainPreview.appendChild(chainElement);
     return true;
   }
@@ -382,15 +376,21 @@ function addChainHandler({ chains, chainLength, wordChains, chainPreview }) {
   return notAddedChains.join(" ").slice(0, -1);
 }
 
-setLengthButton.addEventListener("click", function () {
+setLengthButton.addEventListener("click", function (event) {
+  const newChainLength = parseInt(chainLengthInput.value, 10);
+  if (isNaN(newChainLength)) return;
   resetGame();
-  onSetLengthButtonClick(chainLengthInput);
+  chainLengthInput.value = newChainLength;
+  chainLength = newChainLength;
 });
 
 chainLengthInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !setLengthButton.hasAttribute("disabled")) {
+    const newChainLength = parseInt(event.target.value, 10);
+    if (isNaN(newChainLength)) return;
     resetGame();
-    onSetLengthButtonClick(event.target);
+    event.target.value = newChainLength;
+    chainLength = newChainLength;
   }
 });
 
@@ -424,7 +424,7 @@ addChainButton.addEventListener("click", function () {
 
   if (playButton.disabled && chainPreview.children.length > 0) {
     playButton.disabled = false;
-    switchChainPreviewVisibility(true);
+    switchChainPreviewVisibility(chainPreview, true);
   }
 });
 
@@ -472,14 +472,13 @@ chainInput.addEventListener("keydown", function (event) {
 
     if (playButton.disabled && chainPreview.children.length > 0) {
       playButton.disabled = false;
-      switchChainPreviewVisibility(true);
+      switchChainPreviewVisibility(chainPreview, true);
     }
   }
 });
 
 resetButton.addEventListener("click", function () {
   resetGame();
-  switchChainPreviewVisibility(false);
 });
 
 radioButtons.forEach((button) => {
