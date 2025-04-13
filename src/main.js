@@ -18,6 +18,8 @@ var chainLengthInput = document.querySelector(".chain-length-input");
 var radioButtons = document.querySelectorAll(".set-word-order-button");
 var gameScoreWrapper = document.querySelector(".game-score-wrapper");
 var gameScoreElem = document.querySelector(".game-score");
+var saveTemplateButton = document.querySelector(".save-template-button");
+var loadTemplateButton = document.querySelector(".load-template-button");
 
 function getWordPositions(cl, wc) {
   const elementsCount = wc.size;
@@ -286,6 +288,8 @@ function resetGame() {
   setLengthButton.disabled = false;
   addChainButton.disabled = false;
   playButton.disabled = true;
+  saveTemplateButton.disabled = true;
+  loadTemplateButton.disabled = false;
   radioButtons.forEach((button) => (button.disabled = false));
   updateGameScore(gameScoreElem);
   switchGameScoreWrapperVisibility(gameScoreWrapper, false);
@@ -307,6 +311,8 @@ function onPlayButtonClick({
     playButton,
     addChainButton,
     setLengthButton,
+    loadTemplateButton,
+    saveTemplateButton,
     ...radioButtons,
   ]);
   switchChainPreviewVisibility(chainPreview, false);
@@ -326,6 +332,51 @@ function createCloseIcon(cp) {
   });
   return img;
 }
+
+function saveTemplate({ wordChains, chainLength, checkWordPosition }) {
+  const chains = new Array(wordChains.size);
+  const values = wordChains.values();
+  for (let i = 0; i < wordChains.size; i++) {
+    chains[i] = values.next().value;
+  }
+  const template = {
+    checkWordPosition,
+    chainLength,
+    wordChains: chains.join(chainsSeparateSymbol),
+  };
+
+  localStorage.setItem("template", JSON.stringify(template));
+}
+
+function loadTemplate({
+  chainInput,
+  chainLengthInput,
+  radioButtons,
+  addChainButton,
+}) {
+  const template = JSON.parse(localStorage.getItem("template"));
+  if (!template) return;
+
+  resetGame();
+  checkWordPosition = template.checkWordPosition;
+  chainLength = template.chainLength;
+  chainLengthInput.value = template.chainLength;
+
+  for (let button of radioButtons) {
+    button.ariaChecked =
+      button.value === String(template.checkWordPosition) ? true : false;
+  }
+  chainInput.value = template.wordChains;
+  addChainButton.click();
+}
+
+saveTemplateButton.addEventListener("click", function () {
+  saveTemplate({ wordChains, chainLength, checkWordPosition });
+});
+
+loadTemplateButton.addEventListener("click", function () {
+  loadTemplate({ chainInput, chainLengthInput, radioButtons, addChainButton });
+});
 
 function createChainElement(c, cp) {
   const div = document.createElement("div");
@@ -376,7 +427,7 @@ function addChainHandler({ chains, chainLength, wordChains, chainPreview }) {
   return notAddedChains.join(" ").slice(0, -1);
 }
 
-setLengthButton.addEventListener("click", function (event) {
+setLengthButton.addEventListener("click", function () {
   const newChainLength = parseInt(chainLengthInput.value, 10);
   if (isNaN(newChainLength)) return;
   resetGame();
@@ -422,8 +473,13 @@ addChainButton.addEventListener("click", function () {
     chainInput.value = notAddedChains;
   }
 
-  if (playButton.disabled && chainPreview.children.length > 0) {
+  if (
+    playButton.disabled &&
+    saveTemplateButton.disabled &&
+    chainPreview.children.length > 0
+  ) {
     playButton.disabled = false;
+    saveTemplateButton.disabled = false;
     switchChainPreviewVisibility(chainPreview, true);
   }
 });
@@ -470,8 +526,13 @@ chainInput.addEventListener("keydown", function (event) {
       event.target.value = notAddedChains;
     }
 
-    if (playButton.disabled && chainPreview.children.length > 0) {
+    if (
+      playButton.disabled &&
+      saveTemplateButton.disabled &&
+      chainPreview.children.length > 0
+    ) {
       playButton.disabled = false;
+      saveTemplateButton.disabled = false;
       switchChainPreviewVisibility(chainPreview, true);
     }
   }

@@ -186,8 +186,7 @@ body {
   cursor: pointer;
 }
 
-.set-length-button:hover,
-.set-length-button:focus {
+.set-length-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -242,27 +241,28 @@ body {
   font-size: var(--font-size-l);
 }
 
-.add-chain-button {
-  background-color: var(--dark-red);
-  padding: var(--padding-xs) var(--padding-s);
-  border-radius: var(--border-radius-s);
-  border: none;
-  color: var(--white-color);
-  font-size: var(--font-size-l);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-}
-
 .add-chain-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
-.play-reset-wrapper {
+.game-control-wrapper {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--margin-m);
+}
+
+.control-buttons-wrapper {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--margin-s);
 }
 
-.play-button {
+.add-chain-button,
+.play-button,
+.reset-button,
+.save-template-button,
+.load-template-button {
   flex: 1;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
@@ -274,23 +274,10 @@ body {
   font-size: var(--font-size-l);
 }
 
-.reset-button {
-  flex: 1;
-  background-color: var(--dark-red);
-  padding: var(--padding-xs) var(--padding-s);
-  border-radius: var(--border-radius-s);
-  border: none;
-  color: var(--white-color);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  font-size: var(--font-size-l);
-}
-
-.reset-button:hover {
-  box-shadow: 0 0 5px var(--dark-red-deep);
-}
-
-.play-button:hover {
+.reset-button:hover,
+.play-button:hover,
+.save-template-button:hover,
+.load-template-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -298,7 +285,9 @@ body {
 .set-length-button:disabled,
 .reset-button:disabled,
 .add-chain-button:disabled,
-.set-word-order-button:disabled {
+.set-word-order-button:disabled,
+.load-template-button:disabled,
+.save-template-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }

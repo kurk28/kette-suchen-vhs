@@ -45,9 +45,15 @@
           <button type="button" id="add-chain-button" class="add-chain-button">Add chain</button>
         </section>
         <section class="chain-preview-wrapper chain-preview-wrapper--hidden"></section>
-        <section class="play-reset-wrapper">
-          <button type="button" id="reset-button" class="reset-button">Reset</button>
-          <button type="button" id="play-button" class="play-button" disabled>Let's play!</button>
+        <section class="game-control-wrapper">
+          <div class="control-buttons-wrapper">
+            <button type="button" id="play-button" class="play-button" disabled>Let's play!</button>
+            <button type="button" id="reset-button" class="reset-button">Reset</button>
+          </div>
+          <div class="control-buttons-wrapper">
+            <button type="button" id="save-template-button" class="save-template-button" disabled>Save template</button>
+            <button type="button" id="load-template-button" class="load-template-button">Load template</button>
+          </div>
         </section>
         <section class="game-score-wrapper game-score-wrapper--hidden">
           <span class="game-score-label">Score:</span>
