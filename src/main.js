@@ -19,7 +19,8 @@ var radioButtons = document.querySelectorAll(".set-word-order-button");
 var gameScoreWrapper = document.querySelector(".game-score-wrapper");
 var gameScoreElem = document.querySelector(".game-score");
 var saveTemplateButton = document.querySelector(".save-template-button");
-var loadTemplateButton = document.querySelector(".load-template-button");
+var chooseTemplateButton = document.querySelector(".choose-template-button");
+var dialog = document.querySelector(".dialog");
 
 function getWordPositions(cl, wc) {
   const elementsCount = wc.size;
@@ -289,7 +290,7 @@ function resetGame() {
   addChainButton.disabled = false;
   playButton.disabled = true;
   saveTemplateButton.disabled = true;
-  loadTemplateButton.disabled = false;
+  chooseTemplateButton.disabled = false;
   radioButtons.forEach((button) => (button.disabled = false));
   updateGameScore(gameScoreElem);
   switchGameScoreWrapperVisibility(gameScoreWrapper, false);
@@ -311,7 +312,7 @@ function onPlayButtonClick({
     playButton,
     addChainButton,
     setLengthButton,
-    loadTemplateButton,
+    chooseTemplateButton,
     saveTemplateButton,
     ...radioButtons,
   ]);
@@ -333,49 +334,172 @@ function createCloseIcon(cp) {
   return img;
 }
 
-function saveTemplate({ wordChains, chainLength, checkWordPosition }) {
+function onSaveTemplateClick() {
+  const content = document.createElement("div");
+  content.classList.add("dialog__save-template-wrapper");
+  const label = document.createElement("label");
+  label.innerHTML = "Set name for a template";
+  label.classList.add("dialog__input-label");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.required = true;
+  input.classList.add("dialog__input");
+  const saveBtn = document.createElement("button");
+  saveBtn.classList.add("dialog__save-button");
+  saveBtn.innerText = "Save";
+  const controller = new AbortController();
+  saveBtn.addEventListener(
+    "click",
+    function onSaveButtonClick() {
+      if (input.checkValidity()) {
+        saveTemplate({
+          wordChains,
+          chainLength,
+          checkWordPosition,
+          name: input.value,
+        });
+        dialog.close();
+        controller.abort();
+      }
+    },
+    { signal: controller.signal }
+  );
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.classList.add("dialog__cancel-button");
+  cancelBtn.innerText = "Cancel";
+  cancelBtn.addEventListener(
+    "click",
+    function () {
+      dialog.close();
+      controller.abort();
+    },
+    { signal: controller.signal }
+  );
+  const btnWrapper = document.createElement("div");
+  btnWrapper.classList.add("dialog__btn-wrapper");
+  btnWrapper.append(saveBtn, cancelBtn);
+  content.append(label, input, btnWrapper);
+  dialog.append(content);
+  dialog.showModal();
+}
+
+function saveTemplate({ wordChains, chainLength, checkWordPosition, name }) {
   const chains = new Array(wordChains.size);
   const values = wordChains.values();
   for (let i = 0; i < wordChains.size; i++) {
     chains[i] = values.next().value;
   }
   const template = {
+    name,
     checkWordPosition,
     chainLength,
     wordChains: chains.join(chainsSeparateSymbol),
+    isDeleted: false,
   };
 
-  localStorage.setItem("template", JSON.stringify(template));
+  const templates = JSON.parse(localStorage.getItem("template")) || [];
+  templates.push(template);
+  localStorage.setItem("template", JSON.stringify(templates));
 }
 
-function loadTemplate({
+function chooseTemplate({
   chainInput,
   chainLengthInput,
   radioButtons,
   addChainButton,
 }) {
-  const template = JSON.parse(localStorage.getItem("template"));
-  if (!template) return;
-
-  resetGame();
-  checkWordPosition = template.checkWordPosition;
-  chainLength = template.chainLength;
-  chainLengthInput.value = template.chainLength;
-
-  for (let button of radioButtons) {
-    button.ariaChecked =
-      button.value === String(template.checkWordPosition) ? true : false;
+  const templates = JSON.parse(localStorage.getItem("template"));
+  if (!templates) {
   }
-  chainInput.value = template.wordChains;
-  addChainButton.click();
+  const controller = new AbortController();
+
+  const deleteTemplate = (event) => {
+    const index = parseInt(event.target.value, 10);
+    templates[index].isDeleted = true;
+    event.target.parentElement.parentElement.remove();
+  };
+
+  const loadTemplate = (event) => {
+    resetGame();
+    const index = parseInt(event.target.value, 10);
+    checkWordPosition = templates[index].checkWordPosition;
+    chainLength = templates[index].chainLength;
+    chainLengthInput.value = templates[index].chainLength;
+    for (let button of radioButtons) {
+      button.ariaChecked =
+        button.value === String(templates[index].checkWordPosition)
+          ? true
+          : false;
+    }
+    chainInput.value = templates[index].wordChains;
+    addChainButton.click();
+    dialog.close();
+  };
+
+  const section = document.createElement("section");
+  section.classList.add("dialog__templates-wrapper");
+
+  const header = document.createElement("h3");
+  header.classList.add("dialog__header");
+  header.innerHTML = "Choose template to load";
+  section.append(header);
+
+  for (let i = 0; i < templates.length; i++) {
+    const temWrapperElem = document.createElement("div");
+    temWrapperElem.classList.add("dialog__template-wrapper");
+    const name = document.createElement("span");
+    name.classList.add("dialog__template-name");
+    const btnWrapper = document.createElement("div");
+    btnWrapper.classList.add("dialog__btn-wrapper");
+    const loadBtn = document.createElement("button");
+    loadBtn.classList.add("load-template-button");
+    loadBtn.value = i;
+    loadBtn.addEventListener("click", loadTemplate, {
+      signal: controller.signal,
+    });
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delete-template-button");
+    deleteBtn.value = i;
+    deleteBtn.addEventListener("click", deleteTemplate, {
+      signal: controller.signal,
+    });
+
+    loadBtn.innerText = "Load";
+    deleteBtn.innerText = "Delete";
+
+    name.innerText = templates[i].name;
+    btnWrapper.append(loadBtn, deleteBtn);
+    temWrapperElem.append(name, btnWrapper);
+    section.append(temWrapperElem);
+  }
+
+  dialog.append(section);
+
+  dialog.addEventListener(
+    "close",
+    function () {
+      const updatedTemplate = templates.filter((t) => !t.isDeleted);
+      localStorage.setItem("template", JSON.stringify(updatedTemplate));
+      controller.abort();
+    },
+    { signal: controller.signal }
+  );
+
+  dialog.showModal();
 }
 
 saveTemplateButton.addEventListener("click", function () {
-  saveTemplate({ wordChains, chainLength, checkWordPosition });
+  onSaveTemplateClick();
 });
 
-loadTemplateButton.addEventListener("click", function () {
-  loadTemplate({ chainInput, chainLengthInput, radioButtons, addChainButton });
+chooseTemplateButton.addEventListener("click", function () {
+  chooseTemplate({
+    chainInput,
+    chainLengthInput,
+    radioButtons,
+    addChainButton,
+  });
 });
 
 function createChainElement(c, cp) {
@@ -552,4 +676,8 @@ radioButtons.forEach((button) => {
       }
     }
   });
+});
+
+dialog.addEventListener("close", function (event) {
+  event.target.replaceChildren();
 });

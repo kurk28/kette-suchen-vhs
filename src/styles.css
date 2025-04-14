@@ -44,7 +44,6 @@ body {
 .main {
   padding: 20px;
   height: 100%;
-  background-color: var(--beige-color);
 }
 
 .container {
@@ -262,7 +261,7 @@ body {
 .play-button,
 .reset-button,
 .save-template-button,
-.load-template-button {
+.choose-template-button {
   flex: 1;
   background-color: var(--dark-red);
   padding: var(--padding-xs) var(--padding-s);
@@ -277,7 +276,9 @@ body {
 .reset-button:hover,
 .play-button:hover,
 .save-template-button:hover,
-.load-template-button:hover {
+.delete-template-button:hover,
+.load-template-button:hover,
+.choose-template-button:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -287,7 +288,8 @@ body {
 .add-chain-button:disabled,
 .set-word-order-button:disabled,
 .load-template-button:disabled,
-.save-template-button:disabled {
+.save-template-button:disabled,
+.choose-template-button:disabled {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
@@ -377,6 +379,129 @@ body {
 
 .game-score-label {
   font-size: var(--font-size-2xl);
+}
+
+.dialog {
+  flex-direction: column;
+  width: 30vw;
+  height: 30vh;
+  max-width: 80vw;
+  max-height: 80vh;
+  border: none;
+  padding: var(--padding-xs) var(--padding-s);
+  border-radius: var(--border-radius-s);
+}
+
+.dialog[open]::backdrop {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+}
+
+.dialog[open] {
+  display: flex;
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.dialog__header {
+  display: flex;
+  justify-content: center;
+  font-size: var(--font-size-l);
+}
+
+.dialog__template-name {
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-medium);
+}
+
+.dialog__templates-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--margin-s);
+}
+
+.dialog__template-wrapper {
+  display: flex;
+  gap: var(--margin-m);
+  align-items: baseline;
+}
+
+.dialog__btn-wrapper {
+  display: flex;
+  gap: var(--margin-s);
+  width: 100%;
+}
+
+.delete-template-button {
+  flex: 1;
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-s);
+  border-color: var(--dark-red);
+  border: solid;
+  color: var(--dark-red);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  font-size: var(--font-size-s);
+}
+
+.load-template-button {
+  flex: 1;
+  background-color: var(--dark-red);
+  border-radius: var(--border-radius-s);
+  border: none;
+  color: var(--white-color);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  font-size: var(--font-size-s);
+}
+
+.dialog__input-label {
+  display: block;
+  margin-bottom: var(--margin-s);
+  font-size: var(--font-size-m);
+}
+
+.dialog__input {
+  box-sizing: border-box;
+  min-height: 50px;
+  margin-bottom: var(--margin-s);
+  border-radius: var(--border-radius-s);
+  border: solid;
+  font-size: var(--font-size-m);
+}
+
+.dialog__save-template-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dialog__save-button {
+  flex: 1;
+  padding: var(--margin-xs);
+  background-color: var(--dark-red);
+  border-radius: var(--border-radius-s);
+  border: none;
+  color: var(--white-color);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  font-size: var(--font-size-s);
+}
+
+.dialog__cancel-button {
+  flex: 1;
+  background-color: var(--white-color);
+  border-radius: var(--border-radius-s);
+  border-color: var(--dark-red);
+  border: solid;
+  color: var(--dark-red);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  font-size: var(--font-size-s);
 }
 
 @media (max-width: 375px) {
