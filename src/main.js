@@ -208,23 +208,21 @@ function openTile(tile, word) {
 function closeTiles(sw) {
   const promises = sw.map((wd) => {
     return new Promise((resolve) => {
-      sw.forEach((wd) => {
-        const tileId = wd.tileId;
-        const tile = document.querySelector(`[tile-id="${tileId}"]`);
-        tile.addEventListener(
-          "animationend",
-          function (event) {
-            if (event.animationName === "rotate-word-container") {
-              this.classList.remove("rotate-word-container");
-              this.firstChild.innerHTML = tileId;
-              resolve();
-            }
-          },
-          { once: true }
-        );
-        tile.classList.add("rotate-word-container");
-        tile.firstChild.innerHTML = "";
-      });
+      const tileId = wd.tileId;
+      const tile = document.querySelector(`[tile-id="${tileId}"]`);
+      tile.addEventListener(
+        "animationend",
+        function (event) {
+          if (event.animationName === "rotate-word-container") {
+            this.classList.remove("rotate-word-container");
+            this.firstChild.innerHTML = tileId;
+            resolve();
+          }
+        },
+        { once: true }
+      );
+      tile.classList.add("rotate-word-container");
+      tile.firstChild.innerHTML = "";
     });
   });
   return Promise.all(promises);
