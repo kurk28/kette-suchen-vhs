@@ -103,6 +103,11 @@ body {
   font-size: var(--font-size-l);
 }
 
+.chain-input:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--dark-red-deep);
+}
+
 .chain-preview-wrapper {
   justify-content: start;
   flex-wrap: wrap;
