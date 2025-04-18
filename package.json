@@ -1,0 +1,21 @@
+{
+  "name": "kette-suchen",
+  "version": "0.0.1",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kurk28/kette-suchen-vhs.git"
+  },
+  "author": "Ilya Dubovik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kurk28/kette-suchen-vhs/issues"
+  },
+  "homepage": "https://github.com/kurk28/kette-suchen-vhs#readme",
+  "description": ""
+}

@@ -1,3 +1,5 @@
+"use strict";
+
 var checkWordPosition = false;
 var chainsSeparateSymbol = ",";
 var splitSymbol = " ";
@@ -160,7 +162,7 @@ function addWordForCalculation(w, tid, sw) {
 
 function calculateWords(sw) {
   let hash = 0;
-  for (w of sw) {
+  for (let w of sw) {
     hash += w.word.split("").reduce((acc, curr) => {
       const code = curr.charCodeAt(0);
       return acc + code;
@@ -228,7 +230,7 @@ function closeTiles(sw) {
   return Promise.all(promises);
 }
 
-function switchChainPreviewVisibility(chainPreview, v = false) {
+function switchChainPreviewVisibility(v = false) {
   if (v) {
     if (chainPreview.classList.contains("chain-preview-wrapper--hidden")) {
       chainPreview.classList.remove("chain-preview-wrapper--hidden");
@@ -303,7 +305,7 @@ function onPlayButtonClick({
   addChainButton,
   setLengthButton,
 }) {
-  wordPositions = getWordPositions(chainLength, wordChains);
+  const wordPositions = getWordPositions(chainLength, wordChains);
   createTiles(wordPositions);
   chainPreview.innerHTML = "";
   addDisabledAttr([
@@ -318,7 +320,7 @@ function onPlayButtonClick({
   switchGameScoreWrapperVisibility(gameScoreWrapper, true);
 }
 
-function createCloseIcon(cp) {
+function createCloseIcon() {
   const img = document.createElement("img");
   img.setAttribute("src", "./icons/close.svg");
   img.classList.add("cross-icon");
@@ -526,7 +528,7 @@ function addChain({ chain, chainLength, wordChains, chainPreview }) {
 function addChainHandler({ chains, chainLength, wordChains, chainPreview }) {
   const chainsCopy = [...chains];
   for (let i = 0; i < chainsCopy.length; i++) {
-    isChainAdded = addChain({
+    const isChainAdded = addChain({
       chain: chainsCopy[i],
       chainLength,
       wordChains,
@@ -549,6 +551,7 @@ function addChainHandler({ chains, chainLength, wordChains, chainPreview }) {
   return notAddedChains.join(" ").slice(0, -1);
 }
 
+//done
 setLengthButton.addEventListener("click", function () {
   const newChainLength = parseInt(chainLengthInput.value, 10);
   if (isNaN(newChainLength)) return;
@@ -556,7 +559,7 @@ setLengthButton.addEventListener("click", function () {
   chainLengthInput.value = newChainLength;
   chainLength = newChainLength;
 });
-
+// done
 chainLengthInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !setLengthButton.hasAttribute("disabled")) {
     const newChainLength = parseInt(event.target.value, 10);
@@ -566,7 +569,7 @@ chainLengthInput.addEventListener("keydown", function (event) {
     chainLength = newChainLength;
   }
 });
-
+// done
 addChainButton.addEventListener("click", function () {
   const chains = chainInput.value.split(chainsSeparateSymbol);
   if (chains.length > 1) {
@@ -605,7 +608,7 @@ addChainButton.addEventListener("click", function () {
     switchChainPreviewVisibility(chainPreview, true);
   }
 });
-
+// done
 playButton.addEventListener("click", function () {
   onPlayButtonClick({
     chainLength,
@@ -618,7 +621,7 @@ playButton.addEventListener("click", function () {
     gameScore,
   });
 });
-
+// done
 chainInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter" && !addChainButton.hasAttribute("disabled")) {
     const chains = event.target.value.split(chainsSeparateSymbol);
@@ -659,11 +662,11 @@ chainInput.addEventListener("keydown", function (event) {
     }
   }
 });
-
+// done
 resetButton.addEventListener("click", function () {
   resetGame();
 });
-
+// done
 radioButtons.forEach((button) => {
   button.addEventListener("click", function (event) {
     const selectedValue = event.target.value === "true";
@@ -675,7 +678,7 @@ radioButtons.forEach((button) => {
     }
   });
 });
-
+// done
 dialog.addEventListener("close", function (event) {
   event.target.replaceChildren();
 });
