@@ -17,7 +17,7 @@ export class GameController {
   updateGameScore(score) {
     if (isNaN(score)) return;
     this.#state.gameScore = score;
-    this.#uiElements.gameScoreElem = score;
+    this.#uiElements.gameScoreElem.textContent = score;
   }
 
   switchGameScoreWrapperVisibility(value) {
