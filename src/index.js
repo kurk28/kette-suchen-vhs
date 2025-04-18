@@ -5,5 +5,9 @@ import { state } from "./state.js";
 import { GameController } from "./gameController.js";
 import { DialogController } from "./dialogController.js";
 
-const gameController = new GameController(state, uiElements, DialogController);
+const gameController = new GameController(
+  state,
+  uiElements,
+  new DialogController(uiElements.dialog)
+);
 gameController.init();

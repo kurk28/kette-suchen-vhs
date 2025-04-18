@@ -8,10 +8,10 @@ export class GameController {
   #state;
   #dialogController;
 
-  constructor(state, ui, DialogController) {
+  constructor(state, ui, dialogController) {
     this.#uiElements = ui;
     this.#state = state;
-    this.#dialogController = new DialogController(this.#uiElements.dialog);
+    this.#dialogController = dialogController;
   }
 
   updateGameScore(score) {
