@@ -1,6 +1,7 @@
 "use strict";
 
 import { DIALOG_EVENTS, CHAIN_EVENTS } from "./events.js";
+import { shuffleArray } from "./util.js";
 
 export class GameController {
   #uiElements;
@@ -25,21 +26,6 @@ export class GameController {
       gameScoreWrapper.classList.remove("game-score-wrapper--hidden");
     } else {
       gameScoreWrapper.classList.add("game-score-wrapper--hidden");
-    }
-  }
-
-  switchChainPreviewVisibility(value) {
-    const { chainPreview } = this.#uiElements;
-    if (value) {
-      if (chainPreview.classList.contains("chain-preview-wrapper--hidden")) {
-        chainPreview.classList.remove("chain-preview-wrapper--hidden");
-        chainPreview.classList.add("chain-preview-wrapper--visible");
-      }
-    } else {
-      if (chainPreview.classList.contains("chain-preview-wrapper--visible")) {
-        chainPreview.classList.remove("chain-preview-wrapper--visible");
-        chainPreview.classList.add("chain-preview-wrapper--hidden");
-      }
     }
   }
 
@@ -219,32 +205,16 @@ export class GameController {
   }
 
   getWordPositions() {
-    const { splitSymbol, chainLength, wordChains } = this.#state;
+    const { splitSymbol, wordChains } = this.#state;
     const elementsCount = wordChains.size;
     const iterator = wordChains.values();
-    const wordPositions = new Array(elementsCount * chainLength);
-    let chain = iterator.next();
-
+    const words = [];
     for (let i = 0; i < elementsCount; i++) {
-      let words = chain.value.split(splitSymbol);
-      for (let j = 0; j < chainLength; j++) {
-        let position = Math.floor(Math.random() * elementsCount * chainLength);
-        if (wordPositions[position]) {
-          while (wordPositions[position] !== undefined) {
-            if (position >= wordPositions.length - 1) {
-              position = 0;
-              continue;
-            }
-            position += 1;
-          }
-          wordPositions[position] = words[j];
-        } else {
-          wordPositions[position] = words[j];
-        }
-      }
-      chain = iterator.next();
+      let splittedChain = iterator.next().value.split(splitSymbol);
+      words.push(...splittedChain);
     }
-    return wordPositions;
+    const shuffledWords = shuffleArray(words);
+    return shuffledWords;
   }
 
   isWordSelected() {
@@ -523,7 +493,6 @@ export class GameController {
   }
 
   onSaveTemplateClick() {
-    console.log("onSaveTemplateClick");
     const { dialog } = this.#uiElements;
     const controller = new AbortController();
     dialog.addEventListener(
