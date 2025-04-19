@@ -13,6 +13,7 @@ export const state = {
   checkWordPosition: false,
   chainsSeparateSymbol: ",",
   splitSymbol: " ",
+  minimumChainLength: 2,
   chainLength: 2,
   gameScore: 0,
   closeTileDelay: 2000,
@@ -20,7 +21,7 @@ export const state = {
   indexToWord: new Map(),
   selectedWords: [],
   selectedWord: "",
-  selectedTile: null,
   selectedTileId: 0,
   templates: loadTemplates(),
+  chainedTiles: new Set(),
 };

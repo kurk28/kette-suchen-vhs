@@ -1,32 +1,24 @@
 "use strict";
 
-import { DIALOG_EVENTS, CHAIN_EVENTS } from "./events.js";
-import { shuffleArray } from "./util.js";
+import { DIALOG_EVENTS, UI_EVENTS } from "./events.js";
+import { shuffleArray, createHash } from "./util.js";
 
 export class GameController {
-  #uiElements;
   #state;
   #dialogController;
+  #uiService;
 
-  constructor(state, ui, dialogController) {
-    this.#uiElements = ui;
+  constructor(state, dialogController, uiService) {
     this.#state = state;
     this.#dialogController = dialogController;
+    this.#uiService = uiService;
+    this.#uiService.init();
   }
 
   updateGameScore(score) {
     if (isNaN(score)) return;
     this.#state.gameScore = score;
-    this.#uiElements.gameScoreElem.textContent = score;
-  }
-
-  switchGameScoreWrapperVisibility(value) {
-    const { gameScoreWrapper } = this.#uiElements;
-    if (value) {
-      gameScoreWrapper.classList.remove("game-score-wrapper--hidden");
-    } else {
-      gameScoreWrapper.classList.add("game-score-wrapper--hidden");
-    }
+    this.#uiService.updateScore(score);
   }
 
   switchDisabledAttr(elements, value = true) {
@@ -34,63 +26,36 @@ export class GameController {
   }
 
   resetGame() {
-    const {
-      radioButtons,
-      setLengthButton,
-      addChainButton,
-      chooseTemplateButton,
-      playButton,
-      saveTemplateButton,
-    } = this.#uiElements;
+    this.#state.selectedWords.length = 0;
+    this.#state.isGameStarted = false;
+    this.#state.checkWordPosition = false;
+    this.#state.chainLength = this.#state.minimumChainLength;
+    this.#state.selectedWords.length = 0;
+    this.#state.selectedTileId = 0;
+    this.updateGameScore(0);
+    this.#state.chainedTiles.clear();
     this.#state.wordChains.clear();
     this.#state.indexToWord.clear();
-    this.#state.selectedWords.length = 0;
-    this.#state.chainLength = 2;
-    this.#uiElements.chainInput.value = "";
-    this.#uiElements.chainLengthInput.value = 2;
-    this.#uiElements.game.replaceChildren();
-    this.#uiElements.chainPreview.replaceChildren();
-    this.updateGameScore(0);
-    this.switchGameScoreWrapperVisibility(false);
-    this.switchChainPreviewVisibility(false);
-    this.switchDisabledAttr(
-      [radioButtons, setLengthButton, addChainButton, chooseTemplateButton],
-      false
-    );
-    this.switchDisabledAttr([playButton, saveTemplateButton], true);
+    this.#uiService.resetGame();
   }
 
   setChainLength(chainLength) {
-    this.#uiElements.chainLengthInput.value = chainLength;
     this.#state.chainLength = chainLength;
   }
 
-  onSetLengthClick() {
-    const { chainLengthInput } = this.#uiElements;
-    const newChainLength = parseInt(chainLengthInput.value, 10);
-    if (isNaN(newChainLength)) return;
+  onSetLengthClick(value) {
+    const { minimumChainLength } = this.#state;
+    const newChainLength = parseInt(value, 10);
+    if (isNaN(newChainLength) || newChainLength < minimumChainLength) return;
     this.resetGame();
     this.setChainLength(newChainLength);
+    this.#uiService.fillChainLengthInput(newChainLength);
   }
 
-  switchChainPreviewVisibility(v = false) {
-    const { chainPreview } = this.#uiElements;
-    if (v) {
-      if (chainPreview.classList.contains("chain-preview-wrapper--hidden")) {
-        chainPreview.classList.remove("chain-preview-wrapper--hidden");
-        chainPreview.classList.add("chain-preview-wrapper--visible");
-      }
-    } else {
-      if (chainPreview.classList.contains("chain-preview-wrapper--visible")) {
-        chainPreview.classList.remove("chain-preview-wrapper--visible");
-        chainPreview.classList.add("chain-preview-wrapper--hidden");
-      }
-    }
-  }
-
-  checkChainPreviewVisibility() {
-    if (this.#uiElements.chainPreview.children.length === 1) {
-      this.switchChainPreviewVisibility();
+  checkChainPreviewVisibility(count) {
+    if (count === 0) {
+      this.#uiService.switchChainPreviewVisibility();
+      this.#uiService.resetDisableButton();
     }
   }
 
@@ -99,7 +64,7 @@ export class GameController {
     img.setAttribute("src", "./icons/close.svg");
     img.classList.add("cross-icon");
     img.setAttribute("alt", "Delete chain");
-    const deleteChainEvent = new CustomEvent(CHAIN_EVENTS.deleteChain, {
+    const deleteChainEvent = new CustomEvent(UI_EVENTS.deleteChain, {
       bubbles: true,
     });
     img.addEventListener(
@@ -133,13 +98,7 @@ export class GameController {
       const { splitSymbol, wordChains } = this.#state;
       const words = chain.trim().split(splitSymbol);
       if (words.length === chainLength) {
-        let hash = 0;
-        for (let w of words) {
-          hash += w.split("").reduce((acc, curr) => {
-            const code = curr.charCodeAt(0);
-            return acc + code;
-          }, 0);
-        }
+        const hash = createHash(words);
         if (wordChains.has(hash)) return 0;
         wordChains.set(hash, chain.trim());
         return hash;
@@ -148,11 +107,9 @@ export class GameController {
   }
 
   addChain(chain) {
-    const { chainPreview } = this.#uiElements;
     const hash = this.createChainHash(chain);
     if (hash) {
-      const chainElement = this.createChainElement(chain);
-      chainPreview.appendChild(chainElement);
+      this.#uiService.addChain(chain);
       return true;
     }
     return false;
@@ -160,48 +117,38 @@ export class GameController {
 
   addChainHandler(chains) {
     const { chainsSeparateSymbol } = this.#state;
-    const chainsCopy = [...chains];
-    for (let i = 0; i < chainsCopy.length; i++) {
-      const isChainAdded = this.addChain(chainsCopy[i]);
+    const addedChains = [];
+    const notAddedChains = [];
+    for (let i = 0; i < chains.length; i++) {
+      const isChainAdded = this.addChain(chains[i]);
       if (isChainAdded) {
-        chainsCopy[i] = "";
+        addedChains.push(chains[i]);
+      } else {
+        notAddedChains.push(chains[i]);
       }
     }
 
-    const notAddedChains = [];
-    for (let i = 0; i < chainsCopy.length; i++) {
-      if (chainsCopy[i].length > 0) {
-        const trimmedChain = chainsCopy[i].trim();
-        if (trimmedChain.length > 0) {
-          notAddedChains.push(`${trimmedChain}${chainsSeparateSymbol}`);
-        }
-      }
+    for (let i = 0; i < notAddedChains.length; i++) {
+      const trimmedChain = notAddedChains[i].trim();
+      notAddedChains[i] = `${trimmedChain}${chainsSeparateSymbol}`;
     }
     return notAddedChains.join(" ").slice(0, -1);
   }
 
-  onAddChainButtonClick() {
-    const { isGameStarted, chainsSeparateSymbol } = this.#state;
-    const { chainInput, playButton, saveTemplateButton, chainPreview } =
-      this.#uiElements;
+  onAddChainButtonClick(chain) {
+    const { isGameStarted, chainsSeparateSymbol, wordChains } = this.#state;
     if (isGameStarted) return;
-    if (chainInput.value.includes(chainsSeparateSymbol)) {
-      const chains = chainInput.value.split(chainsSeparateSymbol);
+    const prevWordChainsSize = wordChains.size;
+    if (chain.includes(chainsSeparateSymbol)) {
+      const chains = chain.split(chainsSeparateSymbol);
       const notAddedChains = this.addChainHandler(chains);
-      chainInput.value = notAddedChains;
+      this.#uiService.fillChainInput(notAddedChains);
     } else {
-      const notAddedChains = this.addChainHandler([chainInput.value]);
-      chainInput.value = notAddedChains;
+      const notAddedChains = this.addChainHandler([chain]);
+      this.#uiService.fillChainInput(notAddedChains);
     }
-
-    if (
-      playButton.disabled &&
-      saveTemplateButton.disabled &&
-      chainPreview.children.length > 0
-    ) {
-      this.switchDisabledAttr([playButton, saveTemplateButton], false);
-      this.switchChainPreviewVisibility(true);
-    }
+    const canStartGame = prevWordChainsSize === 0 && wordChains.size > 0;
+    if (canStartGame) this.#uiService.setGameReadyToStart();
   }
 
   getWordPositions() {
@@ -229,43 +176,16 @@ export class GameController {
     return false;
   }
 
-  openTile() {
-    const { selectedTile: tile, selectedWord: word } = this.#state;
+  openTile(tileId, word) {
     return new Promise((resolve) => {
-      tile.addEventListener(
-        "animationend",
-        function (event) {
-          if (event.animationName === "rotate-word-container") {
-            this.classList.remove("rotate-word-container");
-            this.firstChild.innerHTML = word;
-            resolve();
-          }
-        },
-        { once: true }
-      );
-      tile.classList.add("rotate-word-container");
-      tile.firstChild.innerHTML = "";
+      this.#uiService.openTile(tileId, word, resolve);
     });
   }
 
   closeTiles() {
     const promises = this.#state.selectedWords.map((wd) => {
       return new Promise((resolve) => {
-        const tileId = wd.tileId;
-        const tile = document.querySelector(`[tile-id="${tileId}"]`);
-        tile.addEventListener(
-          "animationend",
-          function (event) {
-            if (event.animationName === "rotate-word-container") {
-              this.classList.remove("rotate-word-container");
-              this.firstChild.innerHTML = tileId;
-              resolve();
-            }
-          },
-          { once: true }
-        );
-        tile.classList.add("rotate-word-container");
-        tile.firstChild.innerHTML = "";
+        this.#uiService.closeTile(wd.tileId, resolve);
       });
     });
     return Promise.all(promises);
@@ -300,21 +220,24 @@ export class GameController {
     if (chain) {
       const words = chain.split(splitSymbol);
       for (let i = 0; i < words.length; i++) {
-        const isWordOnHisPlace = checkWordPosition && words[i] === sw[i].word;
-        const isChainContainsWord = words.includes(selectedWords[i].word);
-        return isWordOnHisPlace || isChainContainsWord;
+        if (checkWordPosition && words[i] !== selectedWords[i].word) {
+          return false;
+        } else if (!words.includes(selectedWords[i].word)) {
+          return false;
+        }
       }
+      return true;
     }
     return false;
   }
 
-  async onTileClick(tile) {
+  async onTileClick(tileId) {
     const { selectedWords, indexToWord, chainLength, gameScore } = this.#state;
-    this.#state.selectedTileId = tile.getAttribute("tile-id");
-    this.#state.selectedWord = indexToWord.get(this.#state.selectedTileId);
-    this.#state.selectedTile = tile;
+    this.#state.selectedTileId = tileId;
+    this.#state.selectedWord = indexToWord.get(tileId);
     // skip click if tile is already chained
-    if (tile.classList.contains("word-container--chained")) return;
+    if (this.#state.chainedTiles.has(tileId)) return;
+    // if (tile.classList.contains("word-container--chained")) return;
 
     const isWordSel = this.isWordSelected();
     // close word if user click on the filled chain
@@ -329,13 +252,13 @@ export class GameController {
         selectedWords.length !== chainLength &&
         selectedWords.length < chainLength
       ) {
-        await this.openTile();
+        await this.openTile(tileId, this.#state.selectedWord);
         this.addWordForCalculation();
       } else {
         await this.closeTiles();
         selectedWords.length = 0;
         this.addWordForCalculation();
-        await this.openTile();
+        await this.openTile(tileId, this.#state.selectedWord);
       }
       // calculate chain
       if (selectedWords.length === chainLength) {
@@ -343,9 +266,8 @@ export class GameController {
         this.updateGameScore(gameScore + 1);
         if (isSelectedRight) {
           for (let w of selectedWords) {
-            const tile = document.querySelector(`[tile-id="${w.tileId}"]`);
-            tile.classList.remove("word-container--not-chained");
-            tile.classList.add("word-container--chained");
+            this.#state.chainedTiles.add(w.tileId);
+            this.#uiService.markTileChained(w.tileId);
           }
           selectedWords.length = 0;
         }
@@ -353,65 +275,24 @@ export class GameController {
     }
   }
 
-  createTiles(wordPositions) {
+  onTileCreated(tileInfo) {
     const { indexToWord } = this.#state;
-    const { game } = this.#uiElements;
-    let maxHeight = 0;
-    for (let i = 0; i < wordPositions.length; i++) {
-      const wordContainerElem = document.createElement("div");
-      wordContainerElem.classList.add("word-container");
-      wordContainerElem.classList.add("word-container--not-chained");
-      const tileId = i + 1;
-      wordContainerElem.setAttribute("tile-id", tileId);
-      const wordElem = document.createElement("div");
-      wordElem.innerText = wordPositions[i];
-      wordContainerElem.appendChild(wordElem);
-      wordContainerElem.addEventListener("click", () => {
-        this.onTileClick(wordContainerElem);
-      });
-      game.appendChild(wordContainerElem);
-
-      const height = wordContainerElem.offsetHeight;
-      maxHeight = Math.max(maxHeight, height);
-      wordElem.innerText = tileId;
-      indexToWord.set(String(tileId), wordPositions[i]);
-    }
+    indexToWord.set(tileInfo.tileId, tileInfo.value);
   }
 
   onPlayButtonClick() {
-    const {
-      playButton,
-      addChainButton,
-      setLengthButton,
-      chooseTemplateButton,
-      saveTemplateButton,
-      radioButtons,
-      chainPreview,
-    } = this.#uiElements;
     const wordPositions = this.getWordPositions();
-    this.createTiles(wordPositions);
-    chainPreview.innerHTML = "";
-    this.switchDisabledAttr([
-      playButton,
-      addChainButton,
-      setLengthButton,
-      chooseTemplateButton,
-      saveTemplateButton,
-      ...radioButtons,
-    ]);
-    this.switchChainPreviewVisibility(false);
-    this.switchGameScoreWrapperVisibility(true);
+    const maxTileHeight = this.#uiService.createTiles(wordPositions);
+    this.#uiService.setTilesSize(maxTileHeight);
+    this.#uiService.clearChainPreview();
+    this.#uiService.startGame();
   }
 
-  switchWordOrderImportance(isImportant) {
+  toggleWordOrderImportant(isImportant) {
     let { checkWordPosition } = this.#state;
-    const { radioButtons } = this.#uiElements;
-    const selectedValue = isImportant === "true";
-    if (selectedValue !== checkWordPosition) {
-      this.#state.checkWordPosition = selectedValue;
-      for (let button of radioButtons) {
-        button.ariaChecked = button.ariaChecked === "false" ? true : false;
-      }
+    if (isImportant !== checkWordPosition) {
+      this.#state.checkWordPosition = isImportant;
+      this.#uiService.setWordOrderImportant(String(isImportant));
     }
   }
 
@@ -426,49 +307,49 @@ export class GameController {
     localStorage.setItem("template", JSON.stringify(this.#state.templates));
   }
 
-  loadTemplate(index) {
-    const { radioButtons, chainLengthInput, chainInput } = this.#uiElements;
-    const { templates } = this.#state;
-    this.#state.checkWordPosition = templates[index].checkWordPosition;
-    this.#state.chainLength = templates[index].chainLength;
-    chainLengthInput.value = templates[index].chainLength;
-    for (let button of radioButtons) {
-      button.ariaChecked =
-        button.value === String(templates[index].checkWordPosition)
-          ? true
-          : false;
-    }
-    chainInput.value = templates[index].wordChains;
-    this.onAddChainButtonClick();
-  }
+  // loadTemplate(index) {
+  //   const { radioButtons, chainLengthInput, chainInput } = this.#uiElements;
+  //   const { templates } = this.#state;
+  //   this.#state.checkWordPosition = templates[index].checkWordPosition;
+  //   this.#state.chainLength = templates[index].chainLength;
+  //   chainLengthInput.value = templates[index].chainLength;
+  //   for (let button of radioButtons) {
+  //     button.ariaChecked =
+  //       button.value === String(templates[index].checkWordPosition)
+  //         ? true
+  //         : false;
+  //   }
+  //   chainInput.value = templates[index].wordChains;
+  //   this.onAddChainButtonClick();
+  // }
 
-  chooseTemplate() {
-    const { templates } = this.#state;
-    const { dialog } = this.#uiElements;
-    const controller = new AbortController();
-    dialog.addEventListener(
-      DIALOG_EVENTS.deleteTemplate,
-      (event) => this.markTemplateToDelete(event.detail.index),
-      { signal: controller.signal }
-    );
-    dialog.addEventListener(
-      DIALOG_EVENTS.loadTemplate,
-      (event) => {
-        this.resetGame();
-        this.loadTemplate(event.detail.index);
-      },
-      { signal: controller.signal }
-    );
-    dialog.addEventListener(
-      "close",
-      () => {
-        this.checkTemplatesToDelete();
-        controller.abort();
-      },
-      { signal: controller.signal }
-    );
-    this.#dialogController.showChooseTemplate(templates);
-  }
+  // chooseTemplate() {
+  //   const { templates } = this.#state;
+  //   const { dialog } = this.#uiElements;
+  //   const controller = new AbortController();
+  //   dialog.addEventListener(
+  //     DIALOG_EVENTS.deleteTemplate,
+  //     (event) => this.markTemplateToDelete(event.detail.index),
+  //     { signal: controller.signal }
+  //   );
+  //   dialog.addEventListener(
+  //     DIALOG_EVENTS.loadTemplate,
+  //     (event) => {
+  //       this.resetGame();
+  //       this.loadTemplate(event.detail.index);
+  //     },
+  //     { signal: controller.signal }
+  //   );
+  //   dialog.addEventListener(
+  //     "close",
+  //     () => {
+  //       this.checkTemplatesToDelete();
+  //       controller.abort();
+  //     },
+  //     { signal: controller.signal }
+  //   );
+  //   this.#dialogController.showChooseTemplate(templates);
+  // }
 
   saveTemplate(name) {
     const { wordChains, checkWordPosition, chainLength, chainsSeparateSymbol } =
@@ -492,68 +373,63 @@ export class GameController {
     localStorage.setItem("templates", JSON.stringify(templates));
   }
 
-  onSaveTemplateClick() {
-    const { dialog } = this.#uiElements;
-    const controller = new AbortController();
-    dialog.addEventListener(
-      DIALOG_EVENTS.saveTemplate,
-      (event) => this.saveTemplate(event.detail.name),
-      { signal: controller.signal }
-    );
+  // onSaveTemplateClick() {
+  //   const { dialog } = this.#uiElements;
+  //   const controller = new AbortController();
+  //   dialog.addEventListener(
+  //     DIALOG_EVENTS.saveTemplate,
+  //     (event) => this.saveTemplate(event.detail.name),
+  //     { signal: controller.signal }
+  //   );
 
-    dialog.addEventListener(
-      "close",
-      () => {
-        controller.abort();
-      },
-      { signal: controller.signal }
-    );
-    this.#dialogController.showSaveTemplate();
-  }
+  //   dialog.addEventListener(
+  //     "close",
+  //     () => {
+  //       controller.abort();
+  //     },
+  //     { signal: controller.signal }
+  //   );
+  //   this.#dialogController.showSaveTemplate();
+  // }
 
   init() {
-    const {
-      setLengthButton,
-      chainLengthInput,
-      addChainButton,
-      chainInput,
-      playButton,
-      resetButton,
-      radioButtons,
-      chooseTemplateButton,
-      saveTemplateButton,
-      chainPreview,
-    } = this.#uiElements;
-
-    setLengthButton.addEventListener("click", () => this.onSetLengthClick());
-    chainLengthInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        this.onSetLengthClick();
-      }
-    });
-    addChainButton.addEventListener("click", () =>
-      this.onAddChainButtonClick()
+    this.#uiService.addEventListener(UI_EVENTS.setChainLength, (event) =>
+      this.onSetLengthClick(event.detail.value)
     );
-    chainInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        this.onAddChainButtonClick();
-      }
-    });
-    playButton.addEventListener("click", () => {
+    this.#uiService.addEventListener(UI_EVENTS.setChainLength, (event) =>
+      this.onSetLengthClick(event.detail.value)
+    );
+    this.#uiService.addEventListener(UI_EVENTS.addChain, (event) =>
+      this.onAddChainButtonClick(event.detail.value)
+    );
+    this.#uiService.addEventListener(UI_EVENTS.createdTile, (event) =>
+      this.onTileCreated(event.detail)
+    );
+    this.#uiService.addEventListener(UI_EVENTS.playButtonClick, () => {
       this.onPlayButtonClick();
     });
-    resetButton.addEventListener("click", () => this.resetGame());
-    radioButtons.forEach((button) => {
-      button.addEventListener("click", (event) =>
-        this.switchWordOrderImportance(event.target.value)
-      );
-    });
-    chooseTemplateButton.addEventListener("click", () => this.chooseTemplate());
-    saveTemplateButton.addEventListener("click", () =>
-      this.onSaveTemplateClick()
+
+    this.#uiService.addEventListener(UI_EVENTS.resetButtonClick, () =>
+      this.resetGame()
     );
-    chainPreview.addEventListener(CHAIN_EVENTS.deleteChain, () =>
-      this.checkChainPreviewVisibility()
+    this.#uiService.addEventListener(
+      UI_EVENTS.toggleOrderImportant,
+      (event) => {
+        this.toggleWordOrderImportant(event.detail.value);
+      }
     );
+    this.#uiService.addEventListener(UI_EVENTS.onTileClick, (event) =>
+      this.onTileClick(event.detail.tileId)
+    );
+    this.#uiService.addEventListener(UI_EVENTS.deleteChain, (event) =>
+      this.checkChainPreviewVisibility(event.detail.count)
+    );
+    // this.#uiElements.addEventListener(UI_EVENTS.clickChooseTemplateButton, () =>
+    //   this.chooseTemplate()
+    // );
+
+    // saveTemplateButton.addEventListener("click", () =>
+    //   this.onSaveTemplateClick()
+    // );
   }
 }
