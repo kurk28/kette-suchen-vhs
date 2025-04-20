@@ -5,12 +5,14 @@ import { shuffleArray, createHash } from "./util.js";
 
 export class GameController {
   #state;
-  #dialogController;
   #uiService;
+  #saveTemplateDialog;
+  #loadTemplateDialog;
 
-  constructor(state, dialogController, uiService) {
+  constructor(state, saveTemplateDialog, loadTemplateDialog, uiService) {
     this.#state = state;
-    this.#dialogController = dialogController;
+    this.#saveTemplateDialog = saveTemplateDialog;
+    this.#loadTemplateDialog = loadTemplateDialog;
     this.#uiService = uiService;
     this.#uiService.init();
   }
@@ -296,62 +298,45 @@ export class GameController {
     }
   }
 
-  markTemplateToDelete(index) {
+  onDeleteTemplateClick(index) {
     this.#state.templates[index].isDeleted = true;
+    this.#loadTemplateDialog.deleteTemplate(index);
   }
 
   checkTemplatesToDelete() {
     const { templates } = this.#state;
-    this.#state.templates = templates.filter((t) => !t.isDeleted);
-    if (templates.length === this.#state.templates) return;
-    localStorage.setItem("template", JSON.stringify(this.#state.templates));
+    const filteredTemplates = templates.filter((t) => !t.isDeleted);
+    if (filteredTemplates.length === this.#state.templates) return;
+    this.#state.templates = filteredTemplates;
+    localStorage.setItem("templates", JSON.stringify(this.#state.templates));
   }
 
-  // loadTemplate(index) {
-  //   const { radioButtons, chainLengthInput, chainInput } = this.#uiElements;
-  //   const { templates } = this.#state;
-  //   this.#state.checkWordPosition = templates[index].checkWordPosition;
-  //   this.#state.chainLength = templates[index].chainLength;
-  //   chainLengthInput.value = templates[index].chainLength;
-  //   for (let button of radioButtons) {
-  //     button.ariaChecked =
-  //       button.value === String(templates[index].checkWordPosition)
-  //         ? true
-  //         : false;
-  //   }
-  //   chainInput.value = templates[index].wordChains;
-  //   this.onAddChainButtonClick();
-  // }
+  onChooseTemplateButtonClick() {
+    this.#loadTemplateDialog.showDialog(this.#state.templates);
+  }
 
-  // chooseTemplate() {
-  //   const { templates } = this.#state;
-  //   const { dialog } = this.#uiElements;
-  //   const controller = new AbortController();
-  //   dialog.addEventListener(
-  //     DIALOG_EVENTS.deleteTemplate,
-  //     (event) => this.markTemplateToDelete(event.detail.index),
-  //     { signal: controller.signal }
-  //   );
-  //   dialog.addEventListener(
-  //     DIALOG_EVENTS.loadTemplate,
-  //     (event) => {
-  //       this.resetGame();
-  //       this.loadTemplate(event.detail.index);
-  //     },
-  //     { signal: controller.signal }
-  //   );
-  //   dialog.addEventListener(
-  //     "close",
-  //     () => {
-  //       this.checkTemplatesToDelete();
-  //       controller.abort();
-  //     },
-  //     { signal: controller.signal }
-  //   );
-  //   this.#dialogController.showChooseTemplate(templates);
-  // }
+  closeTemplatesDialogHandler() {
+    this.checkTemplatesToDelete();
+    this.closeDialog(this.#saveTemplateDialog);
+  }
 
-  saveTemplate(name) {
+  onLoadTemplateClick(index) {
+    this.loadTemplate(index);
+    this.onAddChainButtonClick(this.#state.templates[index].wordChains);
+    this.closeTemplatesDialogHandler();
+  }
+
+  loadTemplate(index) {
+    const { templates } = this.#state;
+    this.#state.checkWordPosition = templates[index].checkWordPosition;
+    this.#state.chainLength = templates[index].chainLength;
+    this.#uiService.setWordOrderImportant(
+      String(this.#state.checkWordPosition)
+    );
+    this.#uiService.fillChainLengthInput(this.#state.chainLength);
+  }
+
+  storeTemplate(name) {
     const { wordChains, checkWordPosition, chainLength, chainsSeparateSymbol } =
       this.#state;
     const chains = new Array(wordChains.size);
@@ -373,24 +358,18 @@ export class GameController {
     localStorage.setItem("templates", JSON.stringify(templates));
   }
 
-  // onSaveTemplateClick() {
-  //   const { dialog } = this.#uiElements;
-  //   const controller = new AbortController();
-  //   dialog.addEventListener(
-  //     DIALOG_EVENTS.saveTemplate,
-  //     (event) => this.saveTemplate(event.detail.name),
-  //     { signal: controller.signal }
-  //   );
+  storeTemplateHandler(name) {
+    this.storeTemplate(name);
+    this.closeDialog(this.#saveTemplateDialog);
+  }
 
-  //   dialog.addEventListener(
-  //     "close",
-  //     () => {
-  //       controller.abort();
-  //     },
-  //     { signal: controller.signal }
-  //   );
-  //   this.#dialogController.showSaveTemplate();
-  // }
+  closeDialog(dialog) {
+    dialog.closeDialog();
+  }
+
+  onSaveTemplateButtonClick() {
+    this.#saveTemplateDialog.showSaveTemplate();
+  }
 
   init() {
     this.#uiService.addEventListener(UI_EVENTS.setChainLength, (event) =>
@@ -424,12 +403,37 @@ export class GameController {
     this.#uiService.addEventListener(UI_EVENTS.deleteChain, (event) =>
       this.checkChainPreviewVisibility(event.detail.count)
     );
-    // this.#uiElements.addEventListener(UI_EVENTS.clickChooseTemplateButton, () =>
-    //   this.chooseTemplate()
-    // );
-
-    // saveTemplateButton.addEventListener("click", () =>
-    //   this.onSaveTemplateClick()
-    // );
+    this.#uiService.addEventListener(UI_EVENTS.saveTemplateButtonClick, () =>
+      this.onSaveTemplateButtonClick()
+    );
+    this.#uiService.addEventListener(UI_EVENTS.chooseTemplateButtonClick, () =>
+      this.onChooseTemplateButtonClick()
+    );
+    this.#saveTemplateDialog.addEventListener(
+      DIALOG_EVENTS.closeDialogAndSave,
+      (event) => this.storeTemplateHandler(event.detail.name)
+    );
+    this.#saveTemplateDialog.addEventListener(
+      DIALOG_EVENTS.closeDialogAndCancel,
+      () => this.closeDialog(this.#saveTemplateDialog)
+    );
+    this.#loadTemplateDialog.addEventListener(
+      DIALOG_EVENTS.loadTemplate,
+      (event) => this.onLoadTemplateClick(event.detail.index)
+    );
+    this.#loadTemplateDialog.addEventListener(
+      DIALOG_EVENTS.deleteTemplate,
+      (event) => {
+        this.onDeleteTemplateClick(event.detail.index);
+      }
+    );
+    this.#loadTemplateDialog.addEventListener(
+      DIALOG_EVENTS.closeDialogAndCancel,
+      () => this.closeDialog(this.#loadTemplateDialog)
+    );
+    this.#loadTemplateDialog.addEventListener(
+      DIALOG_EVENTS.closeDialogAndSave,
+      () => this.closeTemplatesDialogHandler()
+    );
   }
 }

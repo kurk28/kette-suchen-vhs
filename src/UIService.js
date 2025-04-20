@@ -302,6 +302,11 @@ export class UIService extends EventTarget {
     this.dispatchEvent(event);
   }
 
+  onSaveTemplateButtonClick() {
+    const event = new CustomEvent(UI_EVENTS.saveTemplateButtonClick);
+    this.dispatchEvent(event);
+  }
+
   init() {
     const {
       setLengthButton,
@@ -312,6 +317,7 @@ export class UIService extends EventTarget {
       resetButton,
       radioButtons,
       chooseTemplateButton,
+      saveTemplateButton,
     } = this.#uiElements;
 
     setLengthButton.addEventListener("click", () => this.onSetLengthClick());
@@ -339,6 +345,9 @@ export class UIService extends EventTarget {
     });
     chooseTemplateButton.addEventListener("click", () =>
       this.onChooseTemplateButtonClick()
+    );
+    saveTemplateButton.addEventListener("click", () =>
+      this.onSaveTemplateButtonClick()
     );
   }
 }
