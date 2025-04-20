@@ -1,7 +1,7 @@
 "use strict";
 
-import { DIALOG_EVENTS, UI_EVENTS } from "./events.js";
-import { shuffleArray, createHash } from "./util.js";
+import { DIALOG_EVENTS, UI_EVENTS } from "./helper/events.js";
+import { shuffleArray, createHash } from "./helper/util.js";
 
 export class GameController {
   #state;
@@ -9,7 +9,7 @@ export class GameController {
   #saveTemplateDialog;
   #loadTemplateDialog;
 
-  constructor(state, saveTemplateDialog, loadTemplateDialog, uiService) {
+  constructor({ state, saveTemplateDialog, loadTemplateDialog, uiService }) {
     this.#state = state;
     this.#saveTemplateDialog = saveTemplateDialog;
     this.#loadTemplateDialog = loadTemplateDialog;

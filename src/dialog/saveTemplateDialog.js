@@ -1,6 +1,6 @@
 "use strict";
 
-import { DIALOG_EVENTS } from "./events.js";
+import { DIALOG_EVENTS } from "../helper/events.js";
 
 export class SaveTemplateDialog extends EventTarget {
   #dialog;
