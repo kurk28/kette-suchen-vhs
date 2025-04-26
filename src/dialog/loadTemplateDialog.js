@@ -109,7 +109,7 @@ export class LoadTemplateDialog extends EventTarget {
     name.classList.add("dialog__template-name");
     name.innerText = templateName;
     const buttonWrapper = document.createElement("div");
-    buttonWrapper.classList.add("dialog__btn-wrapper");
+    buttonWrapper.classList.add("dialog__template-btn");
     const loadButton = this.createLoadButton(index);
     const deleteButton = this.createDeleteButton(index);
     buttonWrapper.append(loadButton, deleteButton);
@@ -139,6 +139,7 @@ export class LoadTemplateDialog extends EventTarget {
     const saveButton = this.createSaveButton();
     const buttonWrapper = document.createElement("div");
     buttonWrapper.classList.add("dialog__btn-wrapper");
+    buttonWrapper.classList.add("dialog__btn-wrapper--control");
     buttonWrapper.append(saveButton, cancelButton);
     section.append(buttonWrapper);
     this.#dialog.append(section);

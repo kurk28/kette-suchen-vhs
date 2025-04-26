@@ -388,8 +388,8 @@ body {
 
 .dialog {
   flex-direction: column;
-  width: 30vw;
-  height: 30vh;
+  min-width: 30vw;
+  min-height: 30vh;
   max-width: 80vw;
   max-height: 80vh;
   border: none;
@@ -431,17 +431,21 @@ body {
 .dialog__template-wrapper {
   display: flex;
   gap: var(--margin-m);
-  align-items: baseline;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .dialog__btn-wrapper {
   display: flex;
   gap: var(--margin-s);
-  width: 100%;
+}
+
+.dialog__btn-wrapper--control {
+  margin: var(--margin-s) 0;
 }
 
 .delete-template-button {
-  flex: 1;
+  padding: 0 var(--margin-s);
   background-color: var(--white-color);
   border-radius: var(--border-radius-s);
   border-color: var(--dark-red);
@@ -452,8 +456,13 @@ body {
   font-size: var(--font-size-s);
 }
 
+.dialog__template-btn {
+  display: flex;
+  gap: var(--margin-xs);
+}
+
 .load-template-button {
-  flex: 1;
+  padding: var(--margin-xs) var(--margin-s);
   background-color: var(--dark-red);
   border-radius: var(--border-radius-s);
   border: none;
