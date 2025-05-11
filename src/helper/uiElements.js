@@ -15,4 +15,5 @@ export const uiElements = {
   saveTemplateButton: document.querySelector(".save-template-button"),
   chooseTemplateButton: document.querySelector(".choose-template-button"),
   dialog: document.querySelector(".dialog"),
+  chainSplitSelect: document.querySelector(".chain-split-select"),
 };

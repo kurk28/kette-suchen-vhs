@@ -19,4 +19,5 @@ export const UI_EVENTS = {
   chooseTemplateButtonClick: "choosesTemplateButton:click",
   onTileClick: "tile:click",
   saveTemplateButtonClick: "saveTemplateButton:click",
+  chainSplitSelect: "chainSplitSelect:select",
 };

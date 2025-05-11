@@ -1,6 +1,6 @@
 "use strict";
 
-import { uiElements } from "./helper/ui.js";
+import { uiElements } from "./helper/uiElements.js";
 import { state } from "./helper/state.js";
 import { GameController } from "./gameController.js";
 import { DialogFactory } from "./dialog/dialogFactory.js";

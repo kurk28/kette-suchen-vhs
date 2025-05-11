@@ -11,7 +11,7 @@ function loadTemplates() {
 export const state = {
   isGameStarted: false,
   checkWordPosition: false,
-  chainsSeparateSymbol: ",",
+  chainsSeparateSymbol: ";",
   splitSymbol: " ",
   minimumChainLength: 2,
   chainLength: 2,

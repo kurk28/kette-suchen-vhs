@@ -34,6 +34,7 @@ export class GameController {
     this.#state.chainLength = this.#state.minimumChainLength;
     this.#state.selectedWords.length = 0;
     this.#state.selectedTileId = 0;
+    this.#state.splitSymbol = " ";
     this.updateGameScore(0);
     this.#state.chainedTiles.clear();
     this.#state.wordChains.clear();
@@ -58,6 +59,22 @@ export class GameController {
     if (count === 0) {
       this.#uiService.switchChainPreviewVisibility();
       this.#uiService.resetDisableButton();
+    }
+  }
+
+  onChainSplitSelect(value) {
+    switch (value) {
+      case "0":
+        this.#state.splitSymbol = " ";
+        break;
+      case "1":
+        this.#state.splitSymbol = ",";
+        break;
+      case "2":
+        this.#state.splitSymbol = "-";
+        break;
+      default:
+        this.#state.splitSymbol = " ";
     }
   }
 
@@ -408,6 +425,9 @@ export class GameController {
     );
     this.#uiService.addEventListener(UI_EVENTS.chooseTemplateButtonClick, () =>
       this.onChooseTemplateButtonClick()
+    );
+    this.#uiService.addEventListener(UI_EVENTS.chainSplitSelect, (event) =>
+      this.onChainSplitSelect(event.detail.value)
     );
     this.#saveTemplateDialog.addEventListener(
       DIALOG_EVENTS.closeDialogAndSave,
