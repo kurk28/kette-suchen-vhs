@@ -1,5 +1,13 @@
 "use strict";
 
+export function loadTemplates() {
+  try {
+    return JSON.parse(localStorage.getItem("templates")) || [];
+  } catch {
+    return [];
+  }
+}
+
 // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 export function shuffleArray(arr) {
   for (let i = 0; i < arr.length - 1; i++) {

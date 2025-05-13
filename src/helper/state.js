@@ -1,12 +1,6 @@
 "use strict";
 
-function loadTemplates() {
-  try {
-    return JSON.parse(localStorage.getItem("templates")) || [];
-  } catch {
-    return [];
-  }
-}
+import { loadTemplates } from "./util.js";
 
 export const state = {
   isGameStarted: false,

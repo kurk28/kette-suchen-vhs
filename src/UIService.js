@@ -181,7 +181,6 @@ export class UIService extends EventTarget {
   }
 
   observeChainPreview() {
-    // const observer = new MutationObserver();
     const { chainPreview } = this.#uiElements;
     const event = new CustomEvent(UI_EVENTS.deleteChain, {
       detail: { count: chainPreview.children.length },

@@ -78,39 +78,6 @@ export class GameController {
     }
   }
 
-  createCloseIcon() {
-    const img = document.createElement("img");
-    img.setAttribute("src", "./icons/close.svg");
-    img.classList.add("cross-icon");
-    img.setAttribute("alt", "Delete chain");
-    const deleteChainEvent = new CustomEvent(UI_EVENTS.deleteChain, {
-      bubbles: true,
-    });
-    img.addEventListener(
-      "click",
-      (event) => {
-        event.target.dispatchEvent(deleteChainEvent);
-        event.target.parentElement.remove();
-      },
-      { once: true }
-    );
-
-    return img;
-  }
-
-  createChainElement(chain) {
-    const div = document.createElement("div");
-    const span = document.createElement("span");
-    const text = document.createTextNode(chain);
-    const img = this.createCloseIcon();
-
-    div.classList.add("word-preview");
-    span.appendChild(text);
-    div.appendChild(span);
-    div.appendChild(img);
-    return div;
-  }
-
   createChainHash(chain) {
     if (chain) {
       const { chainLength } = this.#state;
