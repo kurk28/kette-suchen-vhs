@@ -55,11 +55,8 @@ export class GameController {
     this.#uiService.fillChainLengthInput(newChainLength);
   }
 
-  checkChainPreviewVisibility(count) {
-    if (count === 0) {
-      this.#uiService.switchChainPreviewVisibility();
-      this.#uiService.resetDisableButton();
-    }
+  onChainDelete(hash) {
+    this.#state.wordChains.delete(hash);
   }
 
   onChainSplitSelect(value) {
@@ -95,7 +92,7 @@ export class GameController {
   addChain(chain) {
     const hash = this.createChainHash(chain);
     if (hash) {
-      this.#uiService.addChain(chain);
+      this.#uiService.addChain(chain, hash);
       return true;
     }
     return false;
@@ -385,7 +382,7 @@ export class GameController {
       this.onTileClick(event.detail.tileId)
     );
     this.#uiService.addEventListener(UI_EVENTS.deleteChain, (event) =>
-      this.checkChainPreviewVisibility(event.detail.count)
+      this.onChainDelete(event.detail.hash)
     );
     this.#uiService.addEventListener(UI_EVENTS.saveTemplateButtonClick, () =>
       this.onSaveTemplateButtonClick()

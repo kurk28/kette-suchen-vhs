@@ -164,7 +164,7 @@ export class UIService extends EventTarget {
     this.#uiElements.chainInput.value = value;
   }
 
-  createCloseIcon() {
+  createCloseIcon(hash) {
     const img = document.createElement("img");
     img.setAttribute("src", "./icons/close.svg");
     img.classList.add("cross-icon");
@@ -173,26 +173,32 @@ export class UIService extends EventTarget {
       "click",
       (event) => {
         event.target.parentElement.remove();
-        this.observeChainPreview();
+        this.observeChainPreview(hash);
       },
       { once: true }
     );
     return img;
   }
 
-  observeChainPreview() {
+  observeChainPreview(hash) {
     const { chainPreview } = this.#uiElements;
     const event = new CustomEvent(UI_EVENTS.deleteChain, {
-      detail: { count: chainPreview.children.length },
+      detail: {
+        hash,
+      },
     });
     this.dispatchEvent(event);
+    if (chainPreview.children.length === 0) {
+      this.switchChainPreviewVisibility();
+      this.resetDisableButton();
+    }
   }
 
-  createChainElement(chain) {
+  createChainElement(chain, hash) {
     const div = document.createElement("div");
     const span = document.createElement("span");
     const text = document.createTextNode(chain);
-    const img = this.createCloseIcon();
+    const img = this.createCloseIcon(hash);
 
     div.classList.add("word-preview");
     span.appendChild(text);
@@ -201,9 +207,9 @@ export class UIService extends EventTarget {
     return div;
   }
 
-  addChain(chain) {
+  addChain(chain, hash) {
     const { chainPreview } = this.#uiElements;
-    const chainElement = this.createChainElement(chain);
+    const chainElement = this.createChainElement(chain, hash);
     chainPreview.appendChild(chainElement);
   }
 
