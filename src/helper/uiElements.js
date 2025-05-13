@@ -9,7 +9,7 @@ export const uiElements = {
   game: document.querySelector(".game"),
   setLengthButton: document.querySelector(".set-length-button"),
   chainLengthInput: document.querySelector(".chain-length-input"),
-  radioButtons: document.querySelectorAll(".set-word-order-button"),
+  orderImportantRadioButtons: document.querySelectorAll(".radio-order"),
   gameScoreWrapper: document.querySelector(".game-score-wrapper"),
   gameScoreElem: document.querySelector(".game-score"),
   saveTemplateButton: document.querySelector(".save-template-button"),

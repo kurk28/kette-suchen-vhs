@@ -242,27 +242,15 @@ body {
   display: flex;
   padding: 0;
   gap: var(--margin-s);
-  border: none;
   justify-content: center;
   align-items: stretch;
 }
 
-.set-word-order-button {
-  flex: 1;
-  background-color: var(--dark-red);
-  padding: var(--padding-xs) var(--padding-s);
-  border: none;
-  border-radius: var(--border-radius-s);
-  color: var(--white-color);
-  font-size: var(--font-size-m);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-}
-
-.set-word-order-button[aria-checked="true"] {
-  box-shadow: 0 0 5px var(--dark-red-deep);
-  border: solid;
-  border-color: var(--rich-brown);
+.radio-order {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
 }
 
 .word-order-wrapper {
@@ -321,6 +309,7 @@ body {
 .load-template-button:hover,
 .choose-template-button:hover,
 .radio:checked ~ .option,
+.radio-order:checked ~ .option,
 .option:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
@@ -329,7 +318,7 @@ body {
 .set-length-button:disabled,
 .reset-button:disabled,
 .add-chain-button:disabled,
-.set-word-order-button:disabled,
+.radio-order:disabled ~ .option,
 .load-template-button:disabled,
 .save-template-button:disabled,
 .choose-template-button:disabled,

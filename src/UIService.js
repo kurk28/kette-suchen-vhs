@@ -51,7 +51,7 @@ export class UIService extends EventTarget {
       setLengthButton,
       chooseTemplateButton,
       saveTemplateButton,
-      radioButtons,
+      orderImportantRadioButtons,
       chainSplitRadioButtons,
     } = this.#uiElements;
     this.switchDisabledAttr([
@@ -61,7 +61,7 @@ export class UIService extends EventTarget {
       chooseTemplateButton,
       saveTemplateButton,
       ...chainSplitRadioButtons,
-      ...radioButtons,
+      ...orderImportantRadioButtons,
     ]);
     this.switchChainPreviewVisibility(false);
     this.switchGameScoreWrapperVisibility(true);
@@ -215,7 +215,7 @@ export class UIService extends EventTarget {
 
   resetGame() {
     const {
-      radioButtons,
+      orderImportantRadioButtons,
       setLengthButton,
       addChainButton,
       chooseTemplateButton,
@@ -231,7 +231,7 @@ export class UIService extends EventTarget {
     this.switchChainPreviewVisibility(false);
     this.switchDisabledAttr(
       [
-        ...radioButtons,
+        ...orderImportantRadioButtons,
         ...chainSplitRadioButtons,
         setLengthButton,
         addChainButton,
@@ -305,9 +305,9 @@ export class UIService extends EventTarget {
   }
 
   setWordOrderImportant(isImportant) {
-    const { radioButtons } = this.#uiElements;
-    for (let button of radioButtons) {
-      button.ariaChecked = button.value === isImportant;
+    const { orderImportantRadioButtons } = this.#uiElements;
+    for (let button of orderImportantRadioButtons) {
+      button.checked = button.value === isImportant;
     }
   }
 
@@ -336,7 +336,7 @@ export class UIService extends EventTarget {
       chainInput,
       playButton,
       resetButton,
-      radioButtons,
+      orderImportantRadioButtons,
       chooseTemplateButton,
       saveTemplateButton,
       chainSplitRadioButtons,
@@ -360,7 +360,7 @@ export class UIService extends EventTarget {
       this.onPlayButtonClick();
     });
     resetButton.addEventListener("click", () => this.onResetGameClick());
-    radioButtons.forEach((button) => {
+    orderImportantRadioButtons.forEach((button) => {
       button.addEventListener("click", (event) =>
         this.onToggleWordOrderImportanceClick(event.target.value)
       );

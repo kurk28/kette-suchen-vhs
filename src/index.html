@@ -46,12 +46,16 @@
         <section class="word-order-wrapper">
           <label id="word-order-label" class="word-order-label">Ist die Wortreihenfolge wichtig?</label>
           <div class="word-order-fieldset">
-            <fieldset class="set-order-important" role="radiogroup" aria-labelledby="word-order-label">
-              <button type="button" role="radio" name="checkWordPosition" aria-checked="true"
-                class="set-word-order-button" value="false" type="button">nicht wichtig</button>
-              <button type="button" role="radio" name="checkWordPosition" aria-checked="false"
-                class="set-word-order-button" value="true" type="button">wichtig</button>
-            </fieldset>
+            <div class="set-order-important" role="group" aria-labelledby="word-order-label">
+              <label for="order-important" class="label--radio">
+                <input id="order-important" class="radio-order" type="radio" name="word-order" value="false" checked>
+                <span class="option">nicht wichtig</span>
+              </label>
+              <label for="order-not-important" class="label--radio">
+                <input id="order-not-important" class="radio-order" type="radio" name="word-order" value="true">
+                <span class="option">wichtig</span>
+              </label>
+            </div>
           </div>
         </section>
         <section class="chain-input-wrapper">
