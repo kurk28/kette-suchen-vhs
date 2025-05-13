@@ -21,14 +21,14 @@
       </div>
       <form onsubmit="event.preventDefault()">
         <section class="chain-length-wrapper">
-          <label for="chain-length-input" class="chain-length-label">Set chain length</label>
+          <label for="chain-length-input" class="chain-length-label">Kettenlänge festlegen</label>
           <div class="chain-length-input-wrapper">
             <input id="chain-length-input" type="number" min="2" max="99" value="2" class="chain-length-input ">
-            <button class="set-length-button" type="button">Set length</button>
+            <button class="set-length-button" type="button">Länge festlegen</button>
           </div>
         </section>
         <section class="chain-split-wrapper">
-          <label for="chain-split-select" class="chain-split-label">Select chain separator</label>
+          <label for="chain-split-select" class="chain-split-label">Kettentrenner auswählen</label>
           <select id="select" class="chain-split-select" name="chainSplit">
             <option class="option" value="0">die Lü­cke</option>
             <option class="option" value="1">das Komma</option>
@@ -36,35 +36,35 @@
           </select>
         </section>
         <section class="word-order-wrapper">
-          <label id="word-order-label" class="word-order-label">Is word order important?</label>
+          <label id="word-order-label" class="word-order-label">Ist die Wortreihenfolge wichtig?</label>
           <div class="word-order-fieldset">
             <fieldset class="set-order-important" role="radiogroup" aria-labelledby="word-order-label">
               <button type="button" role="radio" name="checkWordPosition" aria-checked="true"
-                class="set-word-order-button" value="false" type="button">not
-                important</button>
+                class="set-word-order-button" value="false" type="button">nicht wichtig</button>
               <button type="button" role="radio" name="checkWordPosition" aria-checked="false"
-                class="set-word-order-button" value="true" type="button">important</button>
+                class="set-word-order-button" value="true" type="button">wichtig</button>
             </fieldset>
           </div>
         </section>
         <section class="chain-input-wrapper">
-          <label for="chain-input" class="chain-input-label">Add chain text</label>
-          <input id="chain-input" class="chain-input" type="text" maxlength="1000" placeholder="Suche nach einem Wort">
-          <button type="button" id="add-chain-button" class="add-chain-button">Add chain</button>
+          <label for="chain-input" class="chain-input-label">Kettentext hinzufügen</label>
+          <input id="chain-input" class="chain-input" type="text" maxlength="1000" placeholder="Wortkette eingeben">
+          <button type="button" id="add-chain-button" class="add-chain-button">Kette hinzufügen</button>
         </section>
         <section class="chain-preview-wrapper chain-preview-wrapper--hidden"></section>
         <section class="game-control-wrapper">
           <div class="control-buttons-wrapper">
-            <button type="button" id="play-button" class="play-button" disabled>Let's play!</button>
-            <button type="button" id="reset-button" class="reset-button">Reset</button>
+            <button type="button" id="play-button" class="play-button" disabled>Los geht’s! </button>
+            <button type="button" id="reset-button" class="reset-button">Zurücksetzen</button>
           </div>
           <div class="control-buttons-wrapper">
-            <button type="button" id="save-template-button" class="save-template-button" disabled>Save template</button>
-            <button type="button" id="choose-template-button" class="choose-template-button">Choose template</button>
+            <button type="button" id="save-template-button" class="save-template-button" disabled>Vorlage
+              speichern</button>
+            <button type="button" id="choose-template-button" class="choose-template-button">Vorlage auswählen</button>
           </div>
         </section>
         <section class="game-score-wrapper game-score-wrapper--hidden">
-          <span class="game-score-label">Score:</span>
+          <span class="game-score-label">Dein Punktestand:</span>
           <span class="game-score">0</span>
         </section>
         <section class="game" class="game--hidden"></section>

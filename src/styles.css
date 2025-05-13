@@ -1,6 +1,6 @@
 :root {
   /* --max-word-container-height property will be set dynamically with JS */
-  --max-word-container-width: 200px;
+  --max-word-container-width: 150px;
   --white-color: #fff;
   --soft-cream: #fff5e1; /* Alternative Light Background */
   --warm-gray: #8c8377; /* Neutral Gray for Balance */
@@ -278,7 +278,7 @@ body {
 .control-buttons-wrapper {
   flex: 1;
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: var(--margin-s);
 }
 
@@ -391,6 +391,7 @@ body {
 .game-score-wrapper {
   display: flex;
   justify-content: center;
+  align-items: end;
   margin: var(--margin-m) 0;
   gap: var(--margin-s);
 }
