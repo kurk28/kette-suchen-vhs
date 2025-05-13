@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8">
@@ -28,12 +28,20 @@
           </div>
         </section>
         <section class="chain-split-wrapper">
-          <label for="chain-split-select" class="chain-split-label">Kettentrenner auswählen</label>
-          <select id="select" class="chain-split-select" name="chainSplit">
-            <option class="option" value="0">die Lü­cke</option>
-            <option class="option" value="1">das Komma</option>
-            <option class="option" value="2">der Strich</option>
-          </select>
+          <div id="chain-split-label" class="chain-split-label">Kettentrenner auswählen</div>
+          <div id="select" class="set-chain-split" name="chainSplit" role="group" aria-labelledby="chain-split-label">
+            <label for="space" class="label--radio">
+              <input id="space" class="radio" type="radio" name="chainSplit" value="0" checked>
+              <span class="option">die Lü­cke</span>
+            </label>
+            <label for="comma" class="label--radio">
+              <input id="comma" class="radio" type="radio" name="chainSplit" value="1">
+              <span class="option">das Komma</span>
+            </label>
+            <label for="dash" class="label--radio">
+              <input id="dash" class="radio" type="radio" name="chainSplit" value="2">
+              <span class="option">der Strich</span>
+            </label>
         </section>
         <section class="word-order-wrapper">
           <label id="word-order-label" class="word-order-label">Ist die Wortreihenfolge wichtig?</label>

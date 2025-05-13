@@ -52,7 +52,7 @@ export class UIService extends EventTarget {
       chooseTemplateButton,
       saveTemplateButton,
       radioButtons,
-      chainSplitSelect,
+      chainSplitRadioButtons,
     } = this.#uiElements;
     this.switchDisabledAttr([
       playButton,
@@ -60,7 +60,7 @@ export class UIService extends EventTarget {
       setLengthButton,
       chooseTemplateButton,
       saveTemplateButton,
-      chainSplitSelect,
+      ...chainSplitRadioButtons,
       ...radioButtons,
     ]);
     this.switchChainPreviewVisibility(false);
@@ -221,7 +221,7 @@ export class UIService extends EventTarget {
       chooseTemplateButton,
       playButton,
       saveTemplateButton,
-      chainSplitSelect,
+      chainSplitRadioButtons,
     } = this.#uiElements;
     this.#uiElements.chainInput.value = "";
     this.#uiElements.chainLengthInput.value = 2;
@@ -232,10 +232,10 @@ export class UIService extends EventTarget {
     this.switchDisabledAttr(
       [
         ...radioButtons,
+        ...chainSplitRadioButtons,
         setLengthButton,
         addChainButton,
         chooseTemplateButton,
-        chainSplitSelect,
       ],
       false
     );
@@ -321,8 +321,8 @@ export class UIService extends EventTarget {
     this.dispatchEvent(event);
   }
 
-  onChainSplitSelect(value) {
-    const event = new CustomEvent(UI_EVENTS.chainSplitSelect, {
+  onChainSplitSymbolSelect(value) {
+    const event = new CustomEvent(UI_EVENTS.chainSplitSymbolSelect, {
       detail: { value: value },
     });
     this.dispatchEvent(event);
@@ -339,7 +339,7 @@ export class UIService extends EventTarget {
       radioButtons,
       chooseTemplateButton,
       saveTemplateButton,
-      chainSplitSelect,
+      chainSplitRadioButtons,
     } = this.#uiElements;
 
     setLengthButton.addEventListener("click", () => this.onSetLengthClick());
@@ -371,8 +371,10 @@ export class UIService extends EventTarget {
     saveTemplateButton.addEventListener("click", () =>
       this.onSaveTemplateButtonClick()
     );
-    chainSplitSelect.addEventListener("input", (event) => {
-      this.onChainSplitSelect(event.target.value);
-    });
+    chainSplitRadioButtons.forEach((input) =>
+      input.addEventListener("input", (event) => {
+        this.onChainSplitSymbolSelect(event.target.value);
+      })
+    );
   }
 }

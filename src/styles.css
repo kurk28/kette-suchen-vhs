@@ -33,6 +33,7 @@
 
 * {
   font-family: "Germania One", system-ui;
+  box-sizing: border-box;
 }
 
 body {
@@ -97,7 +98,6 @@ body {
 }
 
 .chain-input {
-  box-sizing: border-box;
   min-height: 50px;
   padding: 0 var(--padding-s);
   border-radius: var(--border-radius-s);
@@ -207,18 +207,35 @@ body {
   font-size: var(--font-size-m);
 }
 
-.chain-split-select,
-::picker(chain-split-select) {
-  appearance: base-select;
-  cursor: pointer;
+.set-chain-split {
+  display: flex;
+  gap: var(--margin-s);
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.label--radio {
+  display: inline-flex;
+  flex: 1;
+}
+
+.radio {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.option {
   width: 100%;
-  background-color: var(--dark-red);
-  border: none;
+  text-align: center;
   border-radius: var(--border-radius-s);
+  background-color: var(--dark-red);
   padding: var(--margin-xs);
   color: var(--white-color);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-bold);
+  cursor: pointer;
 }
 
 .set-order-important {
@@ -278,7 +295,6 @@ body {
 .control-buttons-wrapper {
   flex: 1;
   display: flex;
-  /* flex-wrap: wrap; */
   gap: var(--margin-s);
 }
 
@@ -304,7 +320,8 @@ body {
 .delete-template-button:hover,
 .load-template-button:hover,
 .choose-template-button:hover,
-.chain-split-select:hover {
+.radio:checked ~ .option,
+.option:hover {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -316,7 +333,7 @@ body {
 .load-template-button:disabled,
 .save-template-button:disabled,
 .choose-template-button:disabled,
-.chain-split-select:disabled {
+.radio:disabled ~ .option {
   background-color: var(--warm-gray);
   cursor: not-allowed;
 }
@@ -328,7 +345,6 @@ body {
 
 .chain-length-input {
   height: 100%;
-  box-sizing: border-box;
   flex: 1;
   text-align: center;
   padding: var(--padding-xs);
@@ -502,7 +518,6 @@ body {
 }
 
 .dialog__input {
-  box-sizing: border-box;
   min-height: 50px;
   margin-bottom: var(--margin-s);
   border-radius: var(--border-radius-s);

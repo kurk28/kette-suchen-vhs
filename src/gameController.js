@@ -59,7 +59,7 @@ export class GameController {
     this.#state.wordChains.delete(hash);
   }
 
-  onChainSplitSelect(value) {
+  setChainSplitSymbol(value) {
     switch (value) {
       case "0":
         this.#state.splitSymbol = " ";
@@ -73,6 +73,11 @@ export class GameController {
       default:
         this.#state.splitSymbol = " ";
     }
+  }
+
+  onChainSplitSymbolSelect(value) {
+    this.resetGame();
+    this.setChainSplitSymbol(value);
   }
 
   createChainHash(chain) {
@@ -390,8 +395,9 @@ export class GameController {
     this.#uiService.addEventListener(UI_EVENTS.chooseTemplateButtonClick, () =>
       this.onChooseTemplateButtonClick()
     );
-    this.#uiService.addEventListener(UI_EVENTS.chainSplitSelect, (event) =>
-      this.onChainSplitSelect(event.detail.value)
+    this.#uiService.addEventListener(
+      UI_EVENTS.chainSplitSymbolSelect,
+      (event) => this.onChainSplitSymbolSelect(event.detail.value)
     );
     this.#saveTemplateDialog.addEventListener(
       DIALOG_EVENTS.closeDialogAndSave,
