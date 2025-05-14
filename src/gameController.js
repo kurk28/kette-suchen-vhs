@@ -9,6 +9,8 @@ export class GameController {
   #saveTemplateDialog;
   #loadTemplateDialog;
 
+  #splitSymbols = [" ", ",", "-"];
+
   constructor({ state, saveTemplateDialog, loadTemplateDialog, uiService }) {
     this.#state = state;
     this.#saveTemplateDialog = saveTemplateDialog;
@@ -316,15 +318,25 @@ export class GameController {
     const { templates } = this.#state;
     this.#state.checkWordPosition = templates[index].checkWordPosition;
     this.#state.chainLength = templates[index].chainLength;
+    this.#state.splitSymbol = templates[index].splitSymbol;
     this.#uiService.setWordOrderImportant(
       String(this.#state.checkWordPosition)
     );
+    const symbolValue = String(
+      this.#splitSymbols.indexOf(this.#state.splitSymbol)
+    );
+    this.#uiService.setChainSplitSymbol(symbolValue);
     this.#uiService.fillChainLengthInput(this.#state.chainLength);
   }
 
   storeTemplate(name) {
-    const { wordChains, checkWordPosition, chainLength, chainsSeparateSymbol } =
-      this.#state;
+    const {
+      wordChains,
+      checkWordPosition,
+      chainLength,
+      chainsSeparateSymbol,
+      splitSymbol,
+    } = this.#state;
     const chains = new Array(wordChains.size);
     const values = wordChains.values();
     for (let i = 0; i < wordChains.size; i++) {
@@ -336,6 +348,7 @@ export class GameController {
       chainLength,
       wordChains: chains.join(chainsSeparateSymbol),
       isDeleted: false,
+      splitSymbol,
     };
 
     const templates = JSON.parse(localStorage.getItem("templates")) || [];

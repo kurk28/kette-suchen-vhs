@@ -311,6 +311,13 @@ export class UIService extends EventTarget {
     }
   }
 
+  setChainSplitSymbol(value) {
+    const { chainSplitRadioButtons } = this.#uiElements;
+    for (let button of chainSplitRadioButtons) {
+      button.checked = button.value === value;
+    }
+  }
+
   onChooseTemplateButtonClick() {
     const event = new CustomEvent(UI_EVENTS.chooseTemplateButtonClick);
     this.dispatchEvent(event);
