@@ -10,6 +10,10 @@
   --black-color: #000; /* Black */
   --beige-color: #ffcc00; /* Gold (German flag gold) */
   --muted-gold: #d4af37; /* Softer Gold for Highlights */
+  --bright-blue: #006f9f;
+  --teal-green: #07a74e;
+  --terra-red: #d35064;
+  --golden-yellow: #fcc743;
   --margin-xs: 10px;
   --margin-s: 20px;
   --margin-m: 30px;
@@ -38,7 +42,6 @@
 
 body {
   font-family: "Times New Roman", Times, serif;
-  background-color: var(--beige-color);
   color: var(--black-color);
 }
 
@@ -101,7 +104,8 @@ body {
   min-height: 50px;
   padding: 0 var(--padding-s);
   border-radius: var(--border-radius-s);
-  border: none;
+  border: solid;
+  border-color: var(--dark-red);
   font-size: var(--font-size-m);
 }
 
@@ -146,7 +150,6 @@ body {
   text-align: center;
   padding: var(--padding-s);
   border-radius: var(--border-radius-s);
-  color: var(--white-color);
   cursor: pointer;
   transition: transform 0.6s;
   word-break: break-all;
@@ -338,7 +341,8 @@ body {
   text-align: center;
   padding: var(--padding-xs);
   border-radius: var(--border-radius-s);
-  border: none;
+  border: solid;
+  border-color: var(--dark-red);
   font-weight: var(--font-weight-regular);
   font-size: var(--font-size-m);
   appearance: textfield;
