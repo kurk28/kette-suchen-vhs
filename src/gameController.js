@@ -1,7 +1,7 @@
 "use strict";
 
 import { DIALOG_EVENTS, UI_EVENTS } from "./helper/events.js";
-import { shuffleArray, createHash } from "./helper/util.js";
+import { shuffleArray, createHash, getWordGenus } from "./helper/util.js";
 
 export class GameController {
   #state;
@@ -222,11 +222,12 @@ export class GameController {
   }
 
   async onTileClick(tileId) {
-    const { selectedWords, indexToWord, chainLength, gameScore } = this.#state;
+    const { selectedWords, indexToWord, chainLength, gameScore, chainedTiles } =
+      this.#state;
     this.#state.selectedTileId = tileId;
     this.#state.selectedWord = indexToWord.get(tileId);
     // skip click if tile is already chained
-    if (this.#state.chainedTiles.has(tileId)) return;
+    if (chainedTiles.has(tileId)) return;
     // if (tile.classList.contains("word-container--chained")) return;
 
     const isWordSel = this.isWordSelected();
@@ -256,8 +257,11 @@ export class GameController {
         this.updateGameScore(gameScore + 1);
         if (isSelectedRight) {
           for (let w of selectedWords) {
-            this.#state.chainedTiles.add(w.tileId);
-            this.#uiService.markTileChained(w.tileId);
+            chainedTiles.add(w.tileId);
+            const genus = getWordGenus(selectedWords);
+            genus != -1
+              ? this.#uiService.markTileChained(w.tileId, genus)
+              : this.#uiService.markTileChained(w.tileId);
           }
           selectedWords.length = 0;
         }

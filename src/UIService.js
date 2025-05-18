@@ -53,8 +53,12 @@ export class UIService extends EventTarget {
       saveTemplateButton,
       orderImportantRadioButtons,
       chainSplitRadioButtons,
+      chainInput,
+      chainLengthInput,
     } = this.#uiElements;
     this.switchDisabledAttr([
+      chainInput,
+      chainLengthInput,
       playButton,
       addChainButton,
       setLengthButton,
@@ -222,6 +226,8 @@ export class UIService extends EventTarget {
       playButton,
       saveTemplateButton,
       chainSplitRadioButtons,
+      chainInput,
+      chainLengthInput,
     } = this.#uiElements;
     this.#uiElements.chainInput.value = "";
     this.#uiElements.chainLengthInput.value = 2;
@@ -236,6 +242,8 @@ export class UIService extends EventTarget {
         setLengthButton,
         addChainButton,
         chooseTemplateButton,
+        chainInput,
+        chainLengthInput,
       ],
       false
     );
@@ -290,10 +298,22 @@ export class UIService extends EventTarget {
     tile.firstChild.innerHTML = "";
   }
 
-  markTileChained(tileId) {
+  markTileChained(tileId, type = 3) {
     const tile = document.querySelector(`[tile-id="${tileId}"]`);
     tile.classList.remove("word-container--not-chained");
-    tile.classList.add("word-container--chained");
+    switch (type) {
+      case 0:
+        tile.classList.add("word-container--chained-m");
+        return;
+      case 1:
+        tile.classList.add("word-container--chained-f");
+        return;
+      case 2:
+        tile.classList.add("word-container--chained-n");
+        return;
+      case 3:
+        tile.classList.add("word-container--chained-p");
+    }
   }
 
   onToggleWordOrderImportanceClick(isImportant) {

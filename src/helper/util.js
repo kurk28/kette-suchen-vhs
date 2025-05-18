@@ -27,3 +27,12 @@ export function createHash(words) {
   }
   return hash;
 }
+
+export function getWordGenus(words) {
+  const genus = ["der", "die", "das"];
+  for (let i = 0; i < words.length; i++) {
+    const index = genus.indexOf(words[i].word);
+    if (index !== -1) return index;
+  }
+  return -1;
+}

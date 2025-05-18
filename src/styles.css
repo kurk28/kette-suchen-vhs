@@ -146,6 +146,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  color: var(--white-color);
   font-size: var(--font-size-m);
   text-align: center;
   padding: var(--padding-s);
@@ -170,8 +171,20 @@ body {
   animation: rotate-word-container 0.3s ease-in-out;
 }
 
-.word-container--chained {
-  background-color: var(--muted-gold);
+.word-container--chained-m {
+  background-color: var(--bright-blue);
+}
+
+.word-container--chained-f {
+  background-color: var(--terra-red);
+}
+
+.word-container--chained-n {
+  background-color: var(--teal-green);
+}
+
+.word-container--chained-p {
+  background-color: var(--golden-yellow);
 }
 
 @keyframes rotate-word-container {
