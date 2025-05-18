@@ -208,7 +208,7 @@ body {
   cursor: pointer;
 }
 
-.set-length-button:hover {
+.set-length-button:hover:enabled {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -286,7 +286,7 @@ body {
   font-size: var(--font-size-m);
 }
 
-.add-chain-button:hover {
+.add-chain-button:hover:enabled {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -318,15 +318,15 @@ body {
   font-size: var(--font-size-m);
 }
 
-.reset-button:hover,
-.play-button:hover,
-.save-template-button:hover,
-.delete-template-button:hover,
-.load-template-button:hover,
-.choose-template-button:hover,
-.radio:checked ~ .option,
-.radio-order:checked ~ .option,
-.option:hover {
+.reset-button:hover:enabled,
+.play-button:hover:enabled,
+.save-template-button:hover:enabled,
+.delete-template-button:hover:enabled,
+.load-template-button:hover:enabled,
+.choose-template-button:hover:enabled,
+.radio:checked:enabled ~ .option,
+.radio-order:checked:enabled ~ .option,
+.option:hover:enabled {
   box-shadow: 0 0 5px var(--dark-red-deep);
 }
 
@@ -340,6 +340,11 @@ body {
 .choose-template-button:disabled,
 .radio:disabled ~ .option {
   background-color: var(--warm-gray);
+  cursor: not-allowed;
+}
+
+.chain-length-input:disabled,
+.chain-input:disabled {
   cursor: not-allowed;
 }
 
