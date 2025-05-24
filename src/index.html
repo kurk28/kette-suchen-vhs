@@ -23,8 +23,9 @@
         <section class="chain-length-wrapper">
           <label for="chain-length-input" class="chain-length-label">Kettenlänge festlegen</label>
           <div class="chain-length-input-wrapper">
-            <input id="chain-length-input" type="number" min="2" max="99" value="2" class="chain-length-input ">
-            <button class="set-length-button" type="button">Länge festlegen</button>
+            <input id="chain-length-input" type="number" min="2" max="99" value="2" class="chain-length-input"
+              data-testid="chain-length-input">
+            <button class="set-length-button" type="button" data-testid="set-length-button">Länge festlegen</button>
           </div>
         </section>
         <section class="chain-split-wrapper">
@@ -48,11 +49,11 @@
           <div class="word-order-fieldset">
             <div class="set-order-important" role="group" aria-labelledby="word-order-label">
               <label for="order-important" class="label--radio">
-                <input id="order-important" class="radio-order" type="radio" name="word-order" value="false" checked>
+                <input id="order-important" class="radio-order" type="radio" name="wordOrder" value="false" checked>
                 <span class="option">nicht wichtig</span>
               </label>
               <label for="order-not-important" class="label--radio">
-                <input id="order-not-important" class="radio-order" type="radio" name="word-order" value="true">
+                <input id="order-not-important" class="radio-order" type="radio" name="wordOrder" value="true">
                 <span class="option">wichtig</span>
               </label>
             </div>
@@ -60,19 +61,25 @@
         </section>
         <section class="chain-input-wrapper">
           <label for="chain-input" class="chain-input-label">Kettentext hinzufügen</label>
-          <input id="chain-input" class="chain-input" type="text" maxlength="1000" placeholder="Wortkette eingeben">
-          <button type="button" id="add-chain-button" class="add-chain-button">Kette hinzufügen</button>
+          <input id="chain-input" class="chain-input" type="text" maxlength="1000" placeholder="Wortkette eingeben"
+            data-testid="chain-input">
+          <button type="button" id="add-chain-button" class="add-chain-button" data-testid="add-chain-button">Kette
+            hinzufügen</button>
         </section>
         <section class="chain-preview-wrapper chain-preview-wrapper--hidden"></section>
         <section class="game-control-wrapper">
           <div class="control-buttons-wrapper">
-            <button type="button" id="play-button" class="play-button" disabled>Los geht’s! </button>
-            <button type="button" id="reset-button" class="reset-button">Zurücksetzen</button>
+            <button type="button" id="play-button" class="play-button" data-testid="play-button" disabled>Los geht’s!
+            </button>
+            <button type="button" id="reset-button" class="reset-button"
+              data-testid="reset-button">Zurücksetzen</button>
           </div>
           <div class="control-buttons-wrapper">
-            <button type="button" id="save-template-button" class="save-template-button" disabled>Vorlage
+            <button type="button" id="save-template-button" class="save-template-button" disabled
+              data-testid="save-template-button">Vorlage
               speichern</button>
-            <button type="button" id="choose-template-button" class="choose-template-button">Vorlage auswählen</button>
+            <button type="button" id="choose-template-button" class="choose-template-button"
+              data-testid="choose-template-button">Vorlage auswählen</button>
           </div>
         </section>
         <section class="game-score-wrapper game-score-wrapper--hidden">
