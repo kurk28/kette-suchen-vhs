@@ -20,7 +20,6 @@ export class GameController {
   }
 
   updateGameScore(score) {
-    if (isNaN(score)) return;
     this.#state.gameScore = score;
     this.#uiService.updateScore(score);
   }
