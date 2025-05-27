@@ -241,6 +241,8 @@ export class UIService extends EventTarget {
     this.#uiElements.chainPreview.replaceChildren();
     this.switchGameScoreWrapperVisibility(false);
     this.switchChainPreviewVisibility(false);
+    this.setWordOrderImportant("false");
+    this.setChainSplitSymbol("0");
     this.switchDisabledAttr(
       [
         ...orderImportantRadioButtons,
