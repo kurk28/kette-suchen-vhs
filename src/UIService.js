@@ -217,6 +217,12 @@ export class UIService extends EventTarget {
     chainPreview.appendChild(chainElement);
   }
 
+  partialResetGame() {
+    this.#uiElements.chainInput.value = "";
+    this.#uiElements.chainPreview.replaceChildren();
+    this.switchChainPreviewVisibility(false);
+  }
+
   resetGame() {
     const {
       orderImportantRadioButtons,

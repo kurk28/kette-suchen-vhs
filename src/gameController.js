@@ -43,6 +43,12 @@ export class GameController {
     this.#uiService.resetGame();
   }
 
+  partialResetGame() {
+    this.#state.wordChains.clear();
+    this.#state.indexToWord.clear();
+    this.#uiService.partialResetGame();
+  }
+
   setChainLength(chainLength) {
     this.#state.chainLength = chainLength;
   }
@@ -51,7 +57,7 @@ export class GameController {
     const { minimumChainLength } = this.#state;
     const newChainLength = parseInt(value, 10);
     if (isNaN(newChainLength) || newChainLength < minimumChainLength) return;
-    this.resetGame();
+    this.partialResetGame();
     this.setChainLength(newChainLength);
     this.#uiService.fillChainLengthInput(newChainLength);
   }
@@ -61,23 +67,11 @@ export class GameController {
   }
 
   setChainSplitSymbol(value) {
-    switch (value) {
-      case "0":
-        this.#state.splitSymbol = " ";
-        break;
-      case "1":
-        this.#state.splitSymbol = ",";
-        break;
-      case "2":
-        this.#state.splitSymbol = "-";
-        break;
-      default:
-        this.#state.splitSymbol = " ";
-    }
+    this.#state.splitSymbol = this.#splitSymbols[value];
   }
 
   onChainSplitSymbolSelect(value) {
-    this.resetGame();
+    this.partialResetGame();
     this.setChainSplitSymbol(value);
   }
 
