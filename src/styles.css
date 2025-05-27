@@ -2,14 +2,10 @@
   /* --max-word-container-height property will be set dynamically with JS */
   --max-word-container-width: 150px;
   --white-color: #fff;
-  --soft-cream: #fff5e1; /* Alternative Light Background */
   --warm-gray: #8c8377; /* Neutral Gray for Balance */
-  --rich-brown: #5c4033; /* Earthy Accent (For Depth) */
   --dark-red: #8b0000; /* Dark Red */
   --dark-red-deep: #600000; /* Deeper Red for Borders & Shadows */
   --black-color: #000; /* Black */
-  --beige-color: #ffcc00; /* Gold (German flag gold) */
-  --muted-gold: #d4af37; /* Softer Gold for Highlights */
   --bright-blue: #006f9f;
   --teal-green: #07a74e;
   --terra-red: #d35064;
@@ -36,12 +32,11 @@
 }
 
 * {
-  font-family: "Germania One", system-ui;
+  font-family: "Source Code Pro", monospace;
   box-sizing: border-box;
 }
 
 body {
-  font-family: "Times New Roman", Times, serif;
   color: var(--black-color);
 }
 
