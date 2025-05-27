@@ -1,7 +1,7 @@
 import { resolve } from "path";
 
 export default {
-  root: "./src",
+  root: ".",
   resolve: {
     alias: {
       "@src": resolve(__dirname, "src"),
@@ -9,9 +9,9 @@ export default {
     },
   },
   build: {
-    outDir: "../dist",
+    outDir: "dist",
   },
-  publicDir: "public",
+  publicDir: resolve(__dirname, "public"),
   server: {
     port: 6969,
   },

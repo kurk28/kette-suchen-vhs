@@ -170,7 +170,7 @@ export class UIService extends EventTarget {
 
   createCloseIcon(hash) {
     const img = document.createElement("img");
-    img.setAttribute("src", "/public/icons/close.svg");
+    img.setAttribute("src", "/icons/close.svg");
     img.classList.add("cross-icon");
     img.setAttribute("alt", "Delete chain");
     img.addEventListener(
