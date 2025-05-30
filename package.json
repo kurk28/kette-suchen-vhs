@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run build && npm run preview",
     "dev": "vite --mode development",
     "build": "vite build --emptyOutDir",
     "preview": "vite preview",

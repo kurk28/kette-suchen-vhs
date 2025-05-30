@@ -33,7 +33,6 @@ export class GameController {
     this.#state.isGameStarted = false;
     this.#state.checkWordPosition = false;
     this.#state.chainLength = this.#state.minimumChainLength;
-    this.#state.selectedWords.length = 0;
     this.#state.selectedTileId = 0;
     this.#state.splitSymbol = " ";
     this.updateGameScore(0);
@@ -84,6 +83,7 @@ export class GameController {
         const hash = createHash(words);
         if (wordChains.has(hash)) return 0;
         wordChains.set(hash, chain.trim());
+        if (import.meta.env.DEV) console.log([hash, chain.trim()]);
         return hash;
       }
     }
@@ -221,17 +221,16 @@ export class GameController {
     this.#state.selectedWord = indexToWord.get(tileId);
     // skip click if tile is already chained
     if (chainedTiles.has(tileId)) return;
-    // if (tile.classList.contains("word-container--chained")) return;
 
-    const isWordSel = this.isWordSelected();
+    const isWordSelected = this.isWordSelected();
     // close word if user click on the filled chain
-    if (isWordSel && selectedWords.length === chainLength) {
+    if (isWordSelected && selectedWords.length === chainLength) {
       await this.closeTiles();
       selectedWords.length = 0;
       return;
-    } else if (!isWordSel) {
+    } else if (!isWordSelected) {
       // open tile and add word for calculation
-      // or close already opened tiles before
+      // or close already opened tiles
       if (
         selectedWords.length !== chainLength &&
         selectedWords.length < chainLength
@@ -264,6 +263,8 @@ export class GameController {
 
   onTileCreated(tileInfo) {
     const { indexToWord } = this.#state;
+    if (import.meta.env.DEV) console.log([tileInfo.tileId, tileInfo.value]);
+
     indexToWord.set(tileInfo.tileId, tileInfo.value);
   }
 
