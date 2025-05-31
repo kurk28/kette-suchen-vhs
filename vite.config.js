@@ -15,6 +15,10 @@ export default {
   server: {
     port: 6969,
   },
+  preview: {
+    port: 6868,
+    strictPort: true,
+  },
   test: {
     dir: "./tests/unit/",
     environment: "jsdom",
