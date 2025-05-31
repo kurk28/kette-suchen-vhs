@@ -218,7 +218,6 @@ export class UIService extends EventTarget {
   }
 
   partialResetGame() {
-    this.#uiElements.chainInput.value = "";
     this.#uiElements.chainPreview.replaceChildren();
     this.switchChainPreviewVisibility(false);
   }
