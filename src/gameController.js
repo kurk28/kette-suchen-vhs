@@ -1,7 +1,7 @@
 "use strict";
 
-import { DIALOG_EVENTS, UI_EVENTS } from "./helper/events.js";
-import { shuffleArray, createHash, getWordGenus } from "./helper/util.js";
+import { DIALOG_EVENTS, UI_EVENTS } from "./helpers/events.js";
+import { shuffleArray, createHash, getWordGenus } from "./helpers/util.js";
 
 export class GameController {
   #state;

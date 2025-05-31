@@ -1,6 +1,6 @@
 "use strict";
 
-import { UI_EVENTS } from "./helper/events.js";
+import { UI_EVENTS } from "./helpers/events.js";
 
 export class UIService extends EventTarget {
   #uiElements;

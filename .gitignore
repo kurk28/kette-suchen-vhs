@@ -2,6 +2,7 @@ NOTE.md
 .DS_Store
 node_modules/
 dist/
+.vscode
 
 # Playwright
 /test-results/
