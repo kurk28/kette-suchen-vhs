@@ -35,10 +35,6 @@ export class UIService extends EventTarget {
     this.switchChainPreviewVisibility(true);
   }
 
-  clearChainPreview() {
-    this.#uiElements.chainPreview.innerHTML = "";
-  }
-
   onPlayButtonClick() {
     const event = new CustomEvent(UI_EVENTS.playButtonClick);
     this.dispatchEvent(event);
@@ -144,7 +140,9 @@ export class UIService extends EventTarget {
   }
 
   switchDisabledAttr(elements = [], value = true) {
-    elements.forEach((el) => (el.disabled = value));
+    elements.forEach((el) => {
+      if (el) el.disabled = value;
+    });
   }
 
   resetDisableButton() {
