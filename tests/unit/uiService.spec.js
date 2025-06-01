@@ -1,3 +1,4 @@
+// ts-check
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { UIService } from "@src/UIService.js";
 import { UI_EVENTS } from "@src/helpers/events.js";
