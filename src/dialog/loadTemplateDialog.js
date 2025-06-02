@@ -86,7 +86,7 @@ export class LoadTemplateDialog extends EventTarget {
     });
     deleteButton.addEventListener(
       "click",
-      (event) => {
+      () => {
         this.dispatchEvent(deleteTemplateEvent);
       },
       { signal: this.#controller.signal }

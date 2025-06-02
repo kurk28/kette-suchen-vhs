@@ -9,7 +9,8 @@
     "build": "vite build --emptyOutDir",
     "preview": "vite preview",
     "test:unit": "vitest",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "lint": "npx eslint ./src/"
   },
   "repository": {
     "type": "git",
@@ -23,8 +24,11 @@
   "homepage": "https://github.com/kurk28/kette-suchen-vhs#readme",
   "description": "",
   "devDependencies": {
+    "@eslint/js": "^9.28.0",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.21",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
     "jsdom": "^26.1.0",
     "vite": "^6.3.5",
     "vitest": "^3.1.4"
