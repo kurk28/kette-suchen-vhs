@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-import { UI_EVENTS } from "./helpers/events.js";
+import { UI_EVENTS } from './helpers/events.js';
 
 export class UIService extends EventTarget {
   #uiElements;
@@ -71,16 +71,16 @@ export class UIService extends EventTarget {
     const { game } = this.#uiElements;
     let maxHeight = 0;
     for (let i = 0; i < wordPositions.length; i++) {
-      const wordContainerElem = document.createElement("div");
-      wordContainerElem.classList.add("word-container");
-      wordContainerElem.classList.add("word-container--not-chained");
+      const wordContainerElem = document.createElement('div');
+      wordContainerElem.classList.add('word-container');
+      wordContainerElem.classList.add('word-container--not-chained');
       const tileId = i + 1;
-      wordContainerElem.setAttribute("tile-id", tileId);
-      const wordElem = document.createElement("div");
+      wordContainerElem.setAttribute('tile-id', tileId);
+      const wordElem = document.createElement('div');
       wordElem.innerText = wordPositions[i];
       wordContainerElem.appendChild(wordElem);
       wordContainerElem.addEventListener(
-        "click",
+        'click',
         ((tileId) => () => {
           this.onTileClick(tileId);
         })(tileId)
@@ -103,11 +103,11 @@ export class UIService extends EventTarget {
 
   setTilesSize(maxHeight) {
     const { game } = this.#uiElements;
-    const root = document.querySelector(":root");
-    root.style.setProperty("--max-word-container-height", `${maxHeight}px`);
+    const root = document.querySelector(':root');
+    root.style.setProperty('--max-word-container-height', `${maxHeight}px`);
     game.style.setProperty(
-      "grid-auto-rows",
-      "minmax(var(--max-word-container-width), var(--max-word-container-height))"
+      'grid-auto-rows',
+      'minmax(var(--max-word-container-width), var(--max-word-container-height))'
     );
   }
 
@@ -118,23 +118,23 @@ export class UIService extends EventTarget {
   switchGameScoreWrapperVisibility(isVisible) {
     const { gameScoreWrapper } = this.#uiElements;
     if (isVisible) {
-      gameScoreWrapper.classList.remove("game-score-wrapper--hidden");
+      gameScoreWrapper.classList.remove('game-score-wrapper--hidden');
     } else {
-      gameScoreWrapper.classList.add("game-score-wrapper--hidden");
+      gameScoreWrapper.classList.add('game-score-wrapper--hidden');
     }
   }
 
   switchChainPreviewVisibility(isVisible = false) {
     const { chainPreview } = this.#uiElements;
     if (isVisible) {
-      if (chainPreview.classList.contains("chain-preview-wrapper--hidden")) {
-        chainPreview.classList.remove("chain-preview-wrapper--hidden");
-        chainPreview.classList.add("chain-preview-wrapper--visible");
+      if (chainPreview.classList.contains('chain-preview-wrapper--hidden')) {
+        chainPreview.classList.remove('chain-preview-wrapper--hidden');
+        chainPreview.classList.add('chain-preview-wrapper--visible');
       }
     } else {
-      if (chainPreview.classList.contains("chain-preview-wrapper--visible")) {
-        chainPreview.classList.remove("chain-preview-wrapper--visible");
-        chainPreview.classList.add("chain-preview-wrapper--hidden");
+      if (chainPreview.classList.contains('chain-preview-wrapper--visible')) {
+        chainPreview.classList.remove('chain-preview-wrapper--visible');
+        chainPreview.classList.add('chain-preview-wrapper--hidden');
       }
     }
   }
@@ -167,12 +167,12 @@ export class UIService extends EventTarget {
   }
 
   createCloseIcon(hash) {
-    const img = document.createElement("img");
-    img.setAttribute("src", "/icons/close.svg");
-    img.classList.add("cross-icon");
-    img.setAttribute("alt", "Delete chain");
+    const img = document.createElement('img');
+    img.setAttribute('src', '/icons/close.svg');
+    img.classList.add('cross-icon');
+    img.setAttribute('alt', 'Delete chain');
     img.addEventListener(
-      "click",
+      'click',
       (event) => {
         event.target.parentElement.remove();
         this.observeChainPreview(hash);
@@ -197,12 +197,12 @@ export class UIService extends EventTarget {
   }
 
   createChainElement(chain, hash) {
-    const div = document.createElement("div");
-    const span = document.createElement("span");
+    const div = document.createElement('div');
+    const span = document.createElement('span');
     const text = document.createTextNode(chain);
     const img = this.createCloseIcon(hash);
 
-    div.classList.add("word-preview");
+    div.classList.add('word-preview');
     span.appendChild(text);
     div.appendChild(span);
     div.appendChild(img);
@@ -232,14 +232,14 @@ export class UIService extends EventTarget {
       chainInput,
       chainLengthInput,
     } = this.#uiElements;
-    this.#uiElements.chainInput.value = "";
+    this.#uiElements.chainInput.value = '';
     this.#uiElements.chainLengthInput.value = 2;
     this.#uiElements.game.replaceChildren();
     this.#uiElements.chainPreview.replaceChildren();
     this.switchGameScoreWrapperVisibility(false);
     this.switchChainPreviewVisibility(false);
-    this.setWordOrderImportant("false");
-    this.setChainSplitSymbol("0");
+    this.setWordOrderImportant('false');
+    this.setChainSplitSymbol('0');
     this.switchDisabledAttr(
       [
         ...orderImportantRadioButtons,
@@ -272,57 +272,57 @@ export class UIService extends EventTarget {
   closeTile(tileId, resolve) {
     const tile = document.querySelector(`[tile-id="${tileId}"]`);
     tile.addEventListener(
-      "animationend",
+      'animationend',
       function (event) {
-        if (event.animationName === "rotate-word-container") {
-          this.classList.remove("rotate-word-container");
+        if (event.animationName === 'rotate-word-container') {
+          this.classList.remove('rotate-word-container');
           this.firstChild.innerHTML = tileId;
           resolve();
         }
       },
       { once: true }
     );
-    tile.classList.add("rotate-word-container");
-    tile.firstChild.innerHTML = "";
+    tile.classList.add('rotate-word-container');
+    tile.firstChild.innerHTML = '';
   }
 
   openTile(tileId, word, resolve) {
     const tile = document.querySelector(`[tile-id="${tileId}"]`);
     tile.addEventListener(
-      "animationend",
+      'animationend',
       function (event) {
-        if (event.animationName === "rotate-word-container") {
-          this.classList.remove("rotate-word-container");
+        if (event.animationName === 'rotate-word-container') {
+          this.classList.remove('rotate-word-container');
           this.firstChild.innerHTML = word;
           resolve();
         }
       },
       { once: true }
     );
-    tile.classList.add("rotate-word-container");
-    tile.firstChild.innerHTML = "";
+    tile.classList.add('rotate-word-container');
+    tile.firstChild.innerHTML = '';
   }
 
   markTileChained(tileId, type = 3) {
     const tile = document.querySelector(`[tile-id="${tileId}"]`);
-    tile.classList.remove("word-container--not-chained");
+    tile.classList.remove('word-container--not-chained');
     switch (type) {
       case 0:
-        tile.classList.add("word-container--chained-m");
+        tile.classList.add('word-container--chained-m');
         return;
       case 1:
-        tile.classList.add("word-container--chained-f");
+        tile.classList.add('word-container--chained-f');
         return;
       case 2:
-        tile.classList.add("word-container--chained-n");
+        tile.classList.add('word-container--chained-n');
         return;
       case 3:
-        tile.classList.add("word-container--chained-p");
+        tile.classList.add('word-container--chained-p');
     }
   }
 
   onToggleWordOrderImportanceClick(isImportant) {
-    const selectedValue = isImportant === "true";
+    const selectedValue = isImportant === 'true';
     const event = new CustomEvent(UI_EVENTS.toggleOrderImportant, {
       detail: { value: selectedValue },
     });
@@ -374,37 +374,37 @@ export class UIService extends EventTarget {
       chainSplitRadioButtons,
     } = this.#uiElements;
 
-    setLengthButton.addEventListener("click", () => this.onSetLengthClick());
-    chainLengthInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
+    setLengthButton.addEventListener('click', () => this.onSetLengthClick());
+    chainLengthInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
         this.onSetLengthClick();
       }
     });
-    addChainButton.addEventListener("click", () =>
+    addChainButton.addEventListener('click', () =>
       this.onAddChainButtonClick(chainInput.value)
     );
-    chainInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
+    chainInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
         this.onAddChainButtonClick(chainInput.value);
       }
     });
-    playButton.addEventListener("click", () => {
+    playButton.addEventListener('click', () => {
       this.onPlayButtonClick();
     });
-    resetButton.addEventListener("click", () => this.onResetGameClick());
+    resetButton.addEventListener('click', () => this.onResetGameClick());
     orderImportantRadioButtons.forEach((button) => {
-      button.addEventListener("click", (event) =>
+      button.addEventListener('click', (event) =>
         this.onToggleWordOrderImportanceClick(event.target.value)
       );
     });
-    chooseTemplateButton.addEventListener("click", () =>
+    chooseTemplateButton.addEventListener('click', () =>
       this.onChooseTemplateButtonClick()
     );
-    saveTemplateButton.addEventListener("click", () =>
+    saveTemplateButton.addEventListener('click', () =>
       this.onSaveTemplateButtonClick()
     );
     chainSplitRadioButtons.forEach((input) =>
-      input.addEventListener("input", (event) => {
+      input.addEventListener('input', (event) => {
         this.onChainSplitSymbolSelect(event.target.value);
       })
     );

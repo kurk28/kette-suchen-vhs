@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 export function loadTemplates() {
   try {
-    return JSON.parse(localStorage.getItem("templates")) || [];
+    return JSON.parse(localStorage.getItem('templates')) || [];
   } catch {
     return [];
   }
@@ -20,7 +20,7 @@ export function shuffleArray(arr) {
 export function createHash(words) {
   let hash = 0;
   for (let w of words) {
-    hash += w.split("").reduce((acc, curr) => {
+    hash += w.split('').reduce((acc, curr) => {
       const code = curr.charCodeAt(0);
       return acc + code;
     }, 0);
@@ -29,7 +29,7 @@ export function createHash(words) {
 }
 
 export function getWordGenus(words) {
-  const genus = ["der", "die", "das"];
+  const genus = ['der', 'die', 'das'];
   for (let i = 0; i < words.length; i++) {
     const index = genus.indexOf(words[i].word);
     if (index !== -1) return index;

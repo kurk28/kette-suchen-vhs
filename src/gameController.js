@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-import { DIALOG_EVENTS, UI_EVENTS } from "./helpers/events.js";
-import { shuffleArray, createHash, getWordGenus } from "./helpers/util.js";
+import { DIALOG_EVENTS, UI_EVENTS } from './helpers/events.js';
+import { shuffleArray, createHash, getWordGenus } from './helpers/util.js';
 
 export class GameController {
   #state;
@@ -9,7 +9,7 @@ export class GameController {
   #saveTemplateDialog;
   #loadTemplateDialog;
 
-  #splitSymbols = [" ", ",", "-"];
+  #splitSymbols = [' ', ',', '-'];
 
   constructor({ state, saveTemplateDialog, loadTemplateDialog, uiService }) {
     this.#state = state;
@@ -34,7 +34,7 @@ export class GameController {
     this.#state.checkWordPosition = false;
     this.#state.chainLength = this.#state.minimumChainLength;
     this.#state.selectedTileId = 0;
-    this.#state.splitSymbol = " ";
+    this.#state.splitSymbol = ' ';
     this.updateGameScore(0);
     this.#state.chainedTiles.clear();
     this.#state.wordChains.clear();
@@ -115,7 +115,7 @@ export class GameController {
       const trimmedChain = notAddedChains[i].trim();
       notAddedChains[i] = `${trimmedChain}${chainsSeparateSymbol}`;
     }
-    return notAddedChains.join(" ").slice(0, -1);
+    return notAddedChains.join(' ').slice(0, -1);
   }
 
   onAddChainButtonClick(chain) {
@@ -187,7 +187,7 @@ export class GameController {
     const { selectedWords } = this.#state;
     let hash = 0;
     for (let w of selectedWords) {
-      hash += w.word.split("").reduce((acc, curr) => {
+      hash += w.word.split('').reduce((acc, curr) => {
         const code = curr.charCodeAt(0);
         return acc + code;
       }, 0);
@@ -294,7 +294,7 @@ export class GameController {
     const filteredTemplates = templates.filter((t) => !t.isDeleted);
     if (filteredTemplates.length === this.#state.templates) return;
     this.#state.templates = filteredTemplates;
-    localStorage.setItem("templates", JSON.stringify(this.#state.templates));
+    localStorage.setItem('templates', JSON.stringify(this.#state.templates));
   }
 
   onChooseTemplateButtonClick() {
@@ -349,10 +349,10 @@ export class GameController {
       splitSymbol,
     };
 
-    const templates = JSON.parse(localStorage.getItem("templates")) || [];
+    const templates = JSON.parse(localStorage.getItem('templates')) || [];
     templates.push(template);
     this.#state.templates = templates;
-    localStorage.setItem("templates", JSON.stringify(templates));
+    localStorage.setItem('templates', JSON.stringify(templates));
   }
 
   storeTemplateHandler(name) {

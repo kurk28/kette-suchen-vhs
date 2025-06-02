@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-import { DIALOG_EVENTS } from "../helpers/events.js";
+import { DIALOG_EVENTS } from '../helpers/events.js';
 
 export class LoadTemplateDialog extends EventTarget {
   #dialog;
@@ -26,11 +26,11 @@ export class LoadTemplateDialog extends EventTarget {
   }
 
   createCancelButton() {
-    const cancelButton = document.createElement("button");
-    cancelButton.classList.add("dialog__cancel-button");
-    cancelButton.innerText = "Cancel";
+    const cancelButton = document.createElement('button');
+    cancelButton.classList.add('dialog__cancel-button');
+    cancelButton.innerText = 'Cancel';
     cancelButton.addEventListener(
-      "click",
+      'click',
       () => {
         this.closeAndCancel();
       },
@@ -40,11 +40,11 @@ export class LoadTemplateDialog extends EventTarget {
   }
 
   createSaveButton() {
-    const saveButton = document.createElement("button");
-    saveButton.classList.add("dialog__save-button");
-    saveButton.innerText = "Save";
+    const saveButton = document.createElement('button');
+    saveButton.classList.add('dialog__save-button');
+    saveButton.innerText = 'Save';
     saveButton.addEventListener(
-      "click",
+      'click',
       () => {
         this.closeAndSave();
       },
@@ -54,14 +54,14 @@ export class LoadTemplateDialog extends EventTarget {
   }
 
   createLoadButton(index) {
-    const loadButton = document.createElement("button");
-    loadButton.classList.add("load-template-button");
-    loadButton.innerText = "Load";
+    const loadButton = document.createElement('button');
+    loadButton.classList.add('load-template-button');
+    loadButton.innerText = 'Load';
     const loadTemplateEvent = new CustomEvent(DIALOG_EVENTS.loadTemplate, {
       detail: { index },
     });
     loadButton.addEventListener(
-      "click",
+      'click',
       () => {
         this.dispatchEvent(loadTemplateEvent);
       },
@@ -78,14 +78,14 @@ export class LoadTemplateDialog extends EventTarget {
   }
 
   createDeleteButton(index) {
-    const deleteButton = document.createElement("button");
-    deleteButton.classList.add("delete-template-button");
-    deleteButton.innerText = "Delete";
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete-template-button');
+    deleteButton.innerText = 'Delete';
     const deleteTemplateEvent = new CustomEvent(DIALOG_EVENTS.deleteTemplate, {
       detail: { index },
     });
     deleteButton.addEventListener(
-      "click",
+      'click',
       () => {
         this.dispatchEvent(deleteTemplateEvent);
       },
@@ -95,21 +95,21 @@ export class LoadTemplateDialog extends EventTarget {
   }
 
   createHeader() {
-    const header = document.createElement("h3");
-    header.classList.add("dialog__header");
-    header.innerHTML = "Choose template to load";
+    const header = document.createElement('h3');
+    header.classList.add('dialog__header');
+    header.innerHTML = 'Choose template to load';
     return header;
   }
 
   createTemplateElem(templateName, index) {
-    const temWrapperElem = document.createElement("div");
-    temWrapperElem.classList.add("dialog__template-wrapper");
+    const temWrapperElem = document.createElement('div');
+    temWrapperElem.classList.add('dialog__template-wrapper');
     temWrapperElem.dataset.value = index;
-    const name = document.createElement("span");
-    name.classList.add("dialog__template-name");
+    const name = document.createElement('span');
+    name.classList.add('dialog__template-name');
     name.innerText = templateName;
-    const buttonWrapper = document.createElement("div");
-    buttonWrapper.classList.add("dialog__template-btn");
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.classList.add('dialog__template-btn');
     const loadButton = this.createLoadButton(index);
     const deleteButton = this.createDeleteButton(index);
     buttonWrapper.append(loadButton, deleteButton);
@@ -121,15 +121,15 @@ export class LoadTemplateDialog extends EventTarget {
     if (!templates) return;
     this.#controller = new AbortController();
     this.#dialog.addEventListener(
-      "close",
+      'close',
       () => {
         this.#dialog.replaceChildren();
         this.#controller.abort();
       },
       { signal: this.#controller.signal }
     );
-    const section = document.createElement("section");
-    section.classList.add("dialog__templates-wrapper");
+    const section = document.createElement('section');
+    section.classList.add('dialog__templates-wrapper');
     const header = this.createHeader();
     section.append(header);
     for (let i = 0; i < templates.length; i++) {
@@ -137,9 +137,9 @@ export class LoadTemplateDialog extends EventTarget {
     }
     const cancelButton = this.createCancelButton();
     const saveButton = this.createSaveButton();
-    const buttonWrapper = document.createElement("div");
-    buttonWrapper.classList.add("dialog__btn-wrapper");
-    buttonWrapper.classList.add("dialog__btn-wrapper--control");
+    const buttonWrapper = document.createElement('div');
+    buttonWrapper.classList.add('dialog__btn-wrapper');
+    buttonWrapper.classList.add('dialog__btn-wrapper--control');
     buttonWrapper.append(saveButton, cancelButton);
     section.append(buttonWrapper);
     this.#dialog.append(section);

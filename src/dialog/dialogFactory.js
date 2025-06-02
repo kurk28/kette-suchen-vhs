@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
-import { LoadTemplateDialog } from "./loadTemplateDialog.js";
-import { SaveTemplateDialog } from "./saveTemplateDialog.js";
+import { LoadTemplateDialog } from './loadTemplateDialog.js';
+import { SaveTemplateDialog } from './saveTemplateDialog.js';
 
 export class DialogFactory {
   static getLoadTemplateDialog(dialog) {
