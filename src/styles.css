@@ -2,10 +2,10 @@
   /* --max-word-container-height property will be set dynamically with JS */
   --max-word-container-width: 150px;
   --white-color: #fff;
-  --warm-gray: #8c8377; /* Neutral Gray for Balance */
-  --dark-red: #8b0000; /* Dark Red */
-  --dark-red-deep: #600000; /* Deeper Red for Borders & Shadows */
-  --black-color: #000; /* Black */
+  --warm-gray: #8c8377;
+  --dark-red: #8b0000;
+  --dark-red-deep: #600000;
+  --black-color: #000;
   --bright-blue: #006f9f;
   --teal-green: #07a74e;
   --terra-red: #d35064;
